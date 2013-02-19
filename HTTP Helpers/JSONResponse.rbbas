@@ -3,8 +3,8 @@ Protected Class JSONResponse
 Inherits Document
 	#tag Method, Flags = &h0
 		Sub Constructor(PageSource As String, MIME As String = "text/html")
-		  Me.Headers = NewReplyHeaders(PageSource.LenB, MIME)
 		  Me.Pagedata = PageSource
+		  Me.Headers.SetHeader("Content-Type", MIME)
 		  Me.Method = RequestMethod.ClientResponse
 		End Sub
 	#tag EndMethod

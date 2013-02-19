@@ -10,12 +10,11 @@ Protected Class Document
 		Sub Constructor(page As FolderItem, Path As String)
 		  If page.Directory Then
 		    Me.Pagedata = DirectoryIndex(Path, page)
-		    Me.Headers = NewReplyHeaders(Me.Pagedata.LenB, "text/html")
 		  Else
 		    Dim bs As BinaryStream = BinaryStream.Open(page)
 		    Me.Pagedata = bs.Read(bs.Length)
 		    bs.Close
-		    Me.Headers = NewReplyHeaders(Me.Pagedata.LenB, MIMEstring(page.Name))
+		    Me.Headers.SetHeader("Content-Type", MIMEstring(page.Name))
 		  End If
 		  Me.StatusCode = 200
 		  Me.Method = RequestMethod.ClientResponse
@@ -26,8 +25,6 @@ Protected Class Document
 		Sub Constructor(ErrorCode As Integer, Param As String)
 		  Me.StatusCode = ErrorCode
 		  Me.Pagedata = ErrorPage(StatusCode, Param)
-		  Me.Headers = NewReplyHeaders(Me.Pagedata.LenB, "text/html")
-		  
 		  Me.Method = RequestMethod.ClientResponse
 		  Me.StatusCode = ErrorCode
 		End Sub
@@ -246,25 +243,6 @@ Protected Class Document
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Shared Function NewReplyHeaders(ContentLength As UInt64 = 0, ContentType As String = "") As InternetHeaders
-		  Dim headers As New InternetHeaders
-		  Dim now As New Date
-		  headers.AppendHeader("Date", HTTPDate(now))
-		  If ContentLength > 0 Then
-		    headers.AppendHeader("Content-Length", Str(ContentLength))
-		    headers.AppendHeader("Content-Encoding", "Identity")
-		  End If
-		  If ContentType.Trim <> "" Then
-		    headers.AppendHeader("Content-Type", ContentType)
-		  End If
-		  'headers.AppendHeader("Accept-Ranges", "bytes")
-		  headers.AppendHeader("Server", HTTPDaemon.DaemonVersion)
-		  headers.AppendHeader("Connection", "Close")
-		  Return headers
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub SetCookie(NewCookie As Cookie)
 		  Dim Cookies() As Cookie = GetCookies(Me.Headers)
@@ -290,12 +268,40 @@ Protected Class Document
 	#tag EndHook
 
 
-	#tag Property, Flags = &h0
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mHeaders = Nil Then
+			    mHeaders = New InternetHeaders
+			    Dim now As New Date
+			    mHeaders.AppendHeader("Date", HTTPDate(now))
+			    If Me.Pagedata.LenB > 0 Then
+			      mHeaders.AppendHeader("Content-Length", Str(Pagedata.LenB))
+			      mHeaders.AppendHeader("Content-Encoding", "Identity")
+			      mHeaders.AppendHeader("Content-Type", "text/html")
+			    End If
+			    'headers.AppendHeader("Accept-Ranges", "bytes")
+			    headers.AppendHeader("Server", HTTPDaemon.DaemonVersion)
+			    headers.AppendHeader("Connection", "Close")
+			  End If
+			  
+			  return mHeaders
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mHeaders = value
+			End Set
+		#tag EndSetter
 		Headers As InternetHeaders
-	#tag EndProperty
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
 		Method As RequestMethod
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mHeaders As InternetHeaders
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
