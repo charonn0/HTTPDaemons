@@ -526,6 +526,38 @@ Begin Window Window1
       Visible         =   True
       Width           =   162
    End
+   Begin CheckBox CheckBox4
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "Caching"
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   5
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      State           =   0
+      TabIndex        =   14
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   138
+      Underline       =   ""
+      Value           =   False
+      Visible         =   True
+      Width           =   162
+   End
 End
 #tag EndWindow
 
@@ -615,21 +647,6 @@ End
 #tag EndEvents
 #tag Events Sock
 	#tag Event
-		Function TamperResponse(ByRef Response As Document) As Boolean
-		  If Response.StatusCode = 200 Then
-		    Response.AppendHeader("X-Judgement-Render", "Your request is granted.")
-		  ElseIf Response.StatusCode = 302 Then
-		    Response.AppendHeader("X-Judgement-Render", "Your request is pending.")
-		  Else
-		    Response.AppendHeader("X-Judgement-Render", "Your request is denied.")
-		  End If
-		  Dim c As New Cookie("time", Format(Microseconds, "####"))
-		  Response.SetCookie(c)
-		  Return True
-		  
-		End Function
-	#tag EndEvent
-	#tag Event
 		Function SendProgress(bytesSent as Integer, bytesLeft as Integer) As Boolean
 		  ProgressBar1.Value = bytesSent * 100 / (bytesSent + bytesLeft)
 		End Function
@@ -647,6 +664,21 @@ End
 		Sub Log(Message As String, Severity As Integer)
 		  TextArea1.AppendText(Message)
 		End Sub
+	#tag EndEvent
+	#tag Event
+		Function TamperResponse(ByRef Response As Document) As Boolean
+		  If Response.StatusCode = 200 Then
+		    Response.AppendHeader("X-Judgement-Render", "Your request is granted.")
+		  ElseIf Response.StatusCode = 302 Then
+		    Response.AppendHeader("X-Judgement-Render", "Your request is pending.")
+		  Else
+		    Response.AppendHeader("X-Judgement-Render", "Your request is denied.")
+		  End If
+		  Dim c As New Cookie("time", Format(Microseconds, "####"))
+		  Response.SetCookie(c)
+		  Return True
+		  
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events LogLevel
@@ -707,6 +739,19 @@ End
 		  sock.AuthenticationRequired = True
 		  Sock.Close
 		  Sock.Listen
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events CheckBox4
+	#tag Event
+		Sub Action()
+		  Sock.UseCache = Me.Value
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Open()
+		  Me.Value = Sock.UseCache
+		  Me.Enabled = Not GZIPAvailable
 		End Sub
 	#tag EndEvent
 #tag EndEvents

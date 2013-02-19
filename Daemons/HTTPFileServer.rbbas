@@ -16,7 +16,11 @@ Inherits HTTPDaemon
 		  Select Case ClientRequest.Method
 		  Case RequestMethod.GET
 		    Dim item As FolderItem = FindItem(ClientRequest.Path)
-		    If item = Nil Then
+		    If PageCache.HasKey(ClientRequest.Path) And UseCache Then
+		      Dim cache As HTMLDocument = PageCache.Value(ClientRequest.Path)
+		      doc = New HTMLDocument(cache, ClientRequest.Path)
+		      
+		    ElseIf item = Nil Then
 		      doc = New HTMLDocument(404, ClientRequest.Path)
 		      
 		    ElseIf item.Directory And Not Me.DirectoryBrowsing Then
@@ -25,6 +29,7 @@ Inherits HTTPDaemon
 		    Else
 		      doc = New HTMLDocument(item, ClientRequest.Path)
 		    End If
+		    PageCache.Value(ClientRequest.Path) = doc
 		    
 		  Case RequestMethod.HEAD
 		    Dim item As FolderItem = FindItem(ClientRequest.Path)
@@ -83,6 +88,43 @@ Inherits HTTPDaemon
 	#tag Property, Flags = &h0
 		Document As FolderItem
 	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared mPageCache As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mUseCache As Boolean = True
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mPageCache = Nil Then mPageCache = New Dictionary
+			  return mPageCache
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mPageCache = value
+			End Set
+		#tag EndSetter
+		Shared PageCache As Dictionary
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mUseCache And Not GZIPAvailable
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mUseCache = value
+			End Set
+		#tag EndSetter
+		UseCache As Boolean
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior

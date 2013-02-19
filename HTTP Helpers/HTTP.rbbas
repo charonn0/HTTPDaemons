@@ -2718,7 +2718,7 @@ Protected Module HTTP
 	#tag EndMethod
 
 
-	#tag Constant, Name = GZIPAvailable, Type = Boolean, Dynamic = False, Default = \"true", Scope = Public
+	#tag Constant, Name = GZIPAvailable, Type = Boolean, Dynamic = False, Default = \"False", Scope = Public
 	#tag EndConstant
 
 

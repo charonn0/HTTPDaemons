@@ -7,6 +7,14 @@ Protected Class Document
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub Constructor(CachedPage As Document, Path As String)
+		  Me.Pagedata = CachedPage.Pagedata
+		  Me.StatusCode = 200
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Constructor(page As FolderItem, Path As String)
 		  If page.Directory Then
 		    Me.Pagedata = DirectoryIndex(Path, page)
