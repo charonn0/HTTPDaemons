@@ -60,6 +60,13 @@ Inherits HTTPDaemon
 
 
 	#tag Method, Flags = &h21
+		Private Sub CacheCleaner(Sender As Timer)
+		  #pragma Unused Sender
+		  PageCache = New Dictionary
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Function FindItem(Path As String) As FolderItem
 		  Dim s As String
 		  Path = Path.ReplaceAll("/", "\")
@@ -80,6 +87,14 @@ Inherits HTTPDaemon
 		End Function
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h0
+		CachePeriod As Integer = 1200000
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private CacheTimer As Timer
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		DirectoryBrowsing As Boolean = True
@@ -120,6 +135,15 @@ Inherits HTTPDaemon
 		#tag EndGetter
 		#tag Setter
 			Set
+			  If value Then
+			    CacheTimer = New Timer
+			    CacheTimer.Period = Me.CachePeriod
+			    AddHandler CacheTimer.Action, AddressOf CacheCleaner
+			    CacheTimer.Mode = Timer.ModeMultiple
+			  Else
+			    CacheTimer = Nil
+			    
+			  End If
 			  mUseCache = value
 			End Set
 		#tag EndSetter
