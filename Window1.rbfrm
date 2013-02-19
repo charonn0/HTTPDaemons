@@ -240,6 +240,7 @@ Begin Window Window1
    Begin HTTPFileServer Sock
       Address         =   ""
       AuthenticationRealm=   "Restricted Area"
+      CachePeriod     =   1200000
       DirectoryBrowsing=   True
       Height          =   32
       Index           =   -2147483648
@@ -250,6 +251,7 @@ Begin Window Window1
       Scope           =   0
       TabPanelIndex   =   0
       Top             =   12
+      UseCache        =   ""
       Width           =   32
    End
    Begin ComboBox LogLevel
@@ -262,7 +264,7 @@ Begin Window Window1
       Height          =   20
       HelpTag         =   ""
       Index           =   -2147483648
-      InitialValue    =   "Caution Only\r\nNormal\r\nAll"
+      InitialValue    =   ""
       Italic          =   ""
       Left            =   5
       ListIndex       =   1
@@ -662,7 +664,9 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub Log(Message As String, Severity As Integer)
-		  TextArea1.AppendText(Message)
+		  If Severity >= Val(LogLevel.Text) Then
+		    TextArea1.AppendText(Message)
+		  End If
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -683,15 +687,11 @@ End
 #tag EndEvents
 #tag Events LogLevel
 	#tag Event
-		Sub Change()
-		  'Select Case Me.ListIndex
-		  'Case 0
-		  'Sock.LogLevel = 0
-		  'Case 1
-		  'Sock.LogLevel = -1
-		  'Case 2
-		  'Sock.LogLevel = -2
-		  'End Select
+		Sub Open()
+		  For i As Integer = 2 DownTo -2
+		    Me.AddRow(Format(i, "-0"))
+		  Next
+		  Me.ListIndex = 3
 		End Sub
 	#tag EndEvent
 #tag EndEvents

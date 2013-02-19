@@ -16,20 +16,23 @@ Inherits HTTPDaemon
 		  Select Case ClientRequest.Method
 		  Case RequestMethod.GET
 		    Dim item As FolderItem = FindItem(ClientRequest.Path)
-		    If PageCache.HasKey(ClientRequest.Path) And UseCache Then
+		    If IsCached(ClientRequest) Then
 		      Dim cache As HTMLDocument = PageCache.Value(ClientRequest.Path)
 		      doc = New HTMLDocument(cache, ClientRequest.Path)
 		      
 		    ElseIf item = Nil Then
+		      Me.Log("Page not found", -2)
 		      doc = New HTMLDocument(404, ClientRequest.Path)
 		      
 		    ElseIf item.Directory And Not Me.DirectoryBrowsing Then
+		      Me.Log("Page is directory and DirectoryBrowsing=False", -2)
 		      doc = New HTMLDocument(403, ClientRequest.Path)
 		      
 		    Else
+		      Me.Log("Found page", -2)
 		      doc = New HTMLDocument(item, ClientRequest.Path)
 		    End If
-		    PageCache.Value(ClientRequest.Path) = doc
+		    If UseCache Then PageCache.Value(ClientRequest.Path) = doc
 		    
 		  Case RequestMethod.HEAD
 		    Dim item As FolderItem = FindItem(ClientRequest.Path)
@@ -60,7 +63,7 @@ Inherits HTTPDaemon
 
 
 	#tag Method, Flags = &h21
-		Private Sub CacheCleaner(Sender As Timer)
+		Private Shared Sub CacheCleaner(Sender As Timer)
 		  #pragma Unused Sender
 		  PageCache = New Dictionary
 		End Sub
@@ -87,13 +90,22 @@ Inherits HTTPDaemon
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Shared Function IsCached(ClientRequest As Request) As Boolean
+		  If PageCache.HasKey(ClientRequest.Path) And UseCache Then
+		    'Dim reqDate As Date = HTTPDate(ClientRequest.Headers.GetHeader("If-Modified-Since"))
+		    'Dim cache As HTMLDocument = PageCache.Value(ClientRequest.Path)
+		    'If reqDate <> Nil And reqDate.TotalSeconds >= Cache.Modified.TotalSeconds Then
+		    Return True
+		    'End If
+		  End If
+		  
+		End Function
+	#tag EndMethod
 
-	#tag Property, Flags = &h0
-		CachePeriod As Integer = 1200000
-	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private CacheTimer As Timer
+		Private Shared CacheTimer As Timer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -109,7 +121,7 @@ Inherits HTTPDaemon
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mUseCache As Boolean = True
+		Private Shared mUseCache As Boolean = True
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -137,17 +149,16 @@ Inherits HTTPDaemon
 			Set
 			  If value Then
 			    CacheTimer = New Timer
-			    CacheTimer.Period = Me.CachePeriod
+			    CacheTimer.Period = 10000
 			    AddHandler CacheTimer.Action, AddressOf CacheCleaner
 			    CacheTimer.Mode = Timer.ModeMultiple
 			  Else
 			    CacheTimer = Nil
-			    
 			  End If
 			  mUseCache = value
 			End Set
 		#tag EndSetter
-		UseCache As Boolean
+		Shared UseCache As Boolean
 	#tag EndComputedProperty
 
 
@@ -174,6 +185,12 @@ Inherits HTTPDaemon
 			InitialValue="False"
 			Type="Boolean"
 			InheritedFrom="HTTPDaemon"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="CachePeriod"
+			Group="Behavior"
+			InitialValue="1200000"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DirectoryBrowsing"
@@ -230,6 +247,11 @@ Inherits HTTPDaemon
 			Group="Position"
 			Type="Integer"
 			InheritedFrom="TCPSocket"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseCache"
+			Group="Behavior"
+			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

@@ -76,6 +76,12 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetHeader(Extends h As InternetHeaders, Name As String) As String
+		  Return h.Value(Name)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetHeader(Headers As InternetHeaders, Headername As String) As String
 		  'Returns a string array of all HTTP cookies in the passed headers
 		  For i As Integer = 0 To Headers.Count - 1
@@ -118,7 +124,7 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function HasHeader(Headers As InternetHeaders, HeaderName As String) As Boolean
+		Function HasHeader(Extends Headers As InternetHeaders, HeaderName As String) As Boolean
 		  For i As Integer = 0 To Headers.Count - 1
 		    If Headers.Name(i) = HeaderName Then Return True
 		  Next

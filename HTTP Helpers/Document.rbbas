@@ -10,7 +10,8 @@ Protected Class Document
 		Sub Constructor(CachedPage As Document, Path As String)
 		  Me.Pagedata = CachedPage.Pagedata
 		  Me.StatusCode = 200
-		  
+		  Me.Modified = CachedPage.Modified
+		  Me.Path = Path
 		End Sub
 	#tag EndMethod
 
@@ -26,6 +27,8 @@ Protected Class Document
 		  End If
 		  Me.StatusCode = 200
 		  Me.Method = RequestMethod.ClientResponse
+		  Me.Modified = Page.ModificationDate
+		  Me.Path = Path
 		End Sub
 	#tag EndMethod
 
@@ -35,6 +38,7 @@ Protected Class Document
 		  Me.Pagedata = ErrorPage(StatusCode, Param)
 		  Me.Method = RequestMethod.ClientResponse
 		  Me.StatusCode = ErrorCode
+		  Me.Modified = New Date
 		End Sub
 	#tag EndMethod
 
@@ -178,12 +182,6 @@ Protected Class Document
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function GetHeader(Name As String) As String
-		  Return Me.Headers.Value(Name)
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h1
 		Protected Shared Function MIMEIcon(ext As String) As String
 		  'This method is from here: https://github.com/bskrtich/RBHTTPServer
@@ -313,7 +311,15 @@ Protected Class Document
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		Modified As Date
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Pagedata As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		Path As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
