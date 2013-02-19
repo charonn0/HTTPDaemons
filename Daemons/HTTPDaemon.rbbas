@@ -10,9 +10,6 @@ Inherits TCPSocket
 		  If TamperRequest(tmp) Then
 		    clientrequest = tmp
 		  End If
-		  
-		  
-		  
 		  If Me.AuthenticationRequired Then
 		    Dim pw As String = GetHeader(ClientRequest.Headers, "Authorization")
 		    pw = pw.Replace("Basic ", "")
@@ -30,19 +27,17 @@ Inherits TCPSocket
 		  If Err IsA EndException Or Err IsA ThreadEndException Then Raise Err
 		  'Return an HTTP 500 Internal Server Error page.
 		  Dim errpage As Document
+		  Dim stack As String
 		  #If DebugBuild Then
-		    Dim stack As String
 		    If UBound(Err.Stack) <= -1 Then
 		      stack = "<br />(empty)<br />"
 		    Else
 		      stack = Join(Err.Stack, "<br />")
 		    End If
-		    Dim msg As String = "<b>Exception<b>: " + _
-		    Introspection.GetType(Err).FullName + "<br />Error Number: " + Str(Err.ErrorNumber) + "<br />Message: " + Err.Message + EndOfLine
-		    errpage = New Document(500, msg + "<br />Stack follows:<blockquote>" + stack + "</blockquote>")
-		  #else
-		    errpage = New Document(500, "")
+		    stack = "<b>Exception<b>: " + Introspection.GetType(Err).FullName + "<br />Error Number: " + Str(Err.ErrorNumber) + "<br />Message: " + Err.Message _
+		    + "<br />Stack follows:<blockquote>" + stack + "</blockquote>" + EndOfLine
 		  #endif
+		  errpage = New Document(500, stack)
 		  
 		  Me.SendResponse(errpage)
 		  
@@ -68,7 +63,7 @@ Inherits TCPSocket
 
 	#tag Method, Flags = &h1
 		Protected Sub SendResponse(ResponseDocument As Document)
-		  Dim tmp As Document = ResponseDocument 
+		  Dim tmp As Document = ResponseDocument
 		  If TamperResponse(tmp) Then
 		    Me.Log("Outbound tamper.", -2)
 		    ResponseDocument  = tmp
