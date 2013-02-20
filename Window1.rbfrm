@@ -664,7 +664,7 @@ End
 	#tag Event
 		Sub Log(Message As String, Severity As Integer)
 		  If Severity >= Val(LogLevel.Text) Then
-		    TextArea1.AppendText(Message)
+		    TextArea1.AppendText(Message + EndOfLine)
 		  End If
 		End Sub
 	#tag EndEvent
