@@ -12,35 +12,35 @@ Inherits HTTPDaemon
 		  Me.Log(ClientRequest.MethodName + " " + ClientRequest.Path + " " + "HTTP/" + Format(ClientRequest.ProtocolVersion, "#.0"), 0)
 		  Me.Log(ClientRequest.Headers.Source, -1)
 		  
-		  Dim doc As HTMLDocument
+		  Dim doc As Document
 		  Select Case ClientRequest.Method
 		  Case RequestMethod.GET
 		    Dim item As FolderItem = FindItem(ClientRequest.Path)
 		    If IsCached(ClientRequest) Then
-		      Dim cache As HTMLDocument = PageCache.Value(ClientRequest.Path)
-		      doc = New HTMLDocument(cache, ClientRequest.Path)
+		      Dim cache As Document = PageCache.Value(ClientRequest.Path)
+		      doc = New Document(cache, ClientRequest.Path)
 		      doc.FromCache = True
 		      Me.Log("Page from cache", -2)
 		      
 		    ElseIf item = Nil Then
 		      Me.Log("Page not found", -2)
-		      doc = New HTMLDocument(404, ClientRequest.Path)
+		      doc = New Document(404, ClientRequest.Path)
 		      
 		    ElseIf item.Directory And Not Me.DirectoryBrowsing Then
 		      Me.Log("Page is directory and DirectoryBrowsing=False", -2)
-		      doc = New HTMLDocument(403, ClientRequest.Path)
+		      doc = New Document(403, ClientRequest.Path)
 		      
 		    Else
 		      Me.Log("Found page", -2)
-		      doc = New HTMLDocument(item, ClientRequest.Path)
+		      doc = New Document(item, ClientRequest.Path)
 		    End If
 		    
 		  Case RequestMethod.HEAD
 		    Dim item As FolderItem = FindItem(ClientRequest.Path)
 		    If item = Nil Then
-		      doc = New HTMLDocument(404, ClientRequest.Path)
+		      doc = New Document(404, ClientRequest.Path)
 		    Else
-		      doc = New HTMLDocument(item, ClientRequest.Path)
+		      doc = New Document(item, ClientRequest.Path)
 		    End If
 		    doc.Pagedata = ""
 		    
@@ -49,10 +49,10 @@ Inherits HTTPDaemon
 		  Case RequestMethod.TRACE
 		    
 		  Case RequestMethod.DELETE, RequestMethod.PUT
-		    doc = New HTMLDocument(405, ClientRequest.MethodName)
+		    doc = New Document(405, ClientRequest.MethodName)
 		    doc.Pagedata = ""
 		  Else
-		    doc = New HTMLDocument(400, ClientRequest.MethodName)
+		    doc = New Document(400, ClientRequest.MethodName)
 		    doc.Pagedata = ""
 		  End Select
 		  

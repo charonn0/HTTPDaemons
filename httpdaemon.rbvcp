@@ -16,7 +16,6 @@ Module=HTTP;HTTP Helpers/HTTP.rbbas;&h578487FF;&h72732FFF;false
 Class=Document;HTTP Helpers/Document.rbbas;&h4D5AE7FF;&h72732FFF;false
 Class=Cookie;HTTP Helpers/Cookie.rbbas;&h7D30EFFF;&h72732FFF;false
 Class=JSONResponse;HTTP Helpers/JSONResponse.rbbas;&h324557FF;&h72732FFF;false
-Class=HTMLDocument;HTTP Helpers/HTMLDocument.rbbas;&h30A1B7FF;&h72732FFF;false
 DefaultWindow=Window1
 MajorVersion=1
 MinorVersion=0

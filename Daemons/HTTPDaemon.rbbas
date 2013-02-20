@@ -76,7 +76,7 @@ Inherits TCPSocket
 		Protected Shared Function IsCached(ClientRequest As Request) As Boolean
 		  If PageCache.HasKey(ClientRequest.Path) And UseCache Then
 		    'Dim reqDate As Date = HTTPDate(ClientRequest.Headers.GetHeader("If-Modified-Since"))
-		    'Dim cache As HTMLDocument = PageCache.Value(ClientRequest.Path)
+		    'Dim cache As Document = PageCache.Value(ClientRequest.Path)
 		    'If reqDate <> Nil And reqDate.TotalSeconds >= Cache.Modified.TotalSeconds Then
 		    Return True
 		    'End If
