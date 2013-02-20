@@ -53,7 +53,7 @@ Inherits TCPSocket
 		  #pragma Unused userAborted
 		  Me.Close
 		  If Me.KeepListening Then
-		    Me.Listen
+		    Super.Listen
 		  End If
 		End Sub
 	#tag EndEvent
@@ -112,6 +112,13 @@ Inherits TCPSocket
 		  End If
 		  
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Listen()
+		  PageCache = New Dictionary
+		  Super.Listen
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0

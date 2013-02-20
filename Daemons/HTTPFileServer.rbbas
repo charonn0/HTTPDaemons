@@ -12,43 +12,59 @@ Inherits HTTPDaemon
 		  Me.Log(ClientRequest.MethodName + " " + ClientRequest.Path + " " + "HTTP/" + Format(ClientRequest.ProtocolVersion, "#.0"), 0)
 		  Me.Log(ClientRequest.Headers.Source, -1)
 		  
-		  Dim doc As Document
+		  Dim doc As Document 'The response object
+		  Dim item As FolderItem = FindItem(ClientRequest.Path)
+		  
 		  Select Case ClientRequest.Method
 		  Case RequestMethod.GET
-		    Dim item As FolderItem = FindItem(ClientRequest.Path)
-		    If IsCached(ClientRequest) Then
+		    If IsCached(ClientRequest) Then 
+		      'Cache hit
 		      Dim cache As Document = PageCache.Value(ClientRequest.Path)
 		      doc = New Document(cache, ClientRequest.Path)
 		      doc.FromCache = True
 		      Me.Log("Page from cache", -2)
 		      
 		    ElseIf item = Nil Then
+		      '404 Not found
 		      Me.Log("Page not found", -2)
 		      doc = New Document(404, ClientRequest.Path)
 		      
 		    ElseIf item.Directory And Not Me.DirectoryBrowsing Then
+		      '403 Forbidden!
 		      Me.Log("Page is directory and DirectoryBrowsing=False", -2)
 		      doc = New Document(403, ClientRequest.Path)
 		      
+		    ElseIf ClientRequest.Path = "/" And Not item.Directory Then 
+		      '302 redirect from "/" to "/" + item.name
+		      doc = New Document(302, ClientRequest.Path)
+		      doc.Headers.SetHeader("Location", "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name)
 		    Else
-		      If ClientRequest.Path = "/" And Not item.Directory Then 
-		        'they want the root item but it's not a directory
-		        'We'll send a 302 redirect from "/" to "/" + item.name
-		        doc = New Document(302, ClientRequest.Path)
-		        doc.Headers.SetHeader("Location", "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name)
-		      Else
-		        Me.Log("Found page", -2)
-		        doc = New Document(item, ClientRequest.Path)
-		      End If
+		      '200 OK
+		      Me.Log("Found page", -2)
+		      doc = New Document(item, ClientRequest.Path)
 		    End If
 		    
 		  Case RequestMethod.HEAD
-		    Dim item As FolderItem = FindItem(ClientRequest.Path)
 		    If item = Nil Then
+		      '404 Not found
+		      Me.Log("Page not found", -2)
 		      doc = New Document(404, ClientRequest.Path)
+		      
+		    ElseIf item.Directory And Not Me.DirectoryBrowsing Then
+		      '403 Forbidden!
+		      Me.Log("Page is directory and DirectoryBrowsing=False", -2)
+		      doc = New Document(403, ClientRequest.Path)
+		      
+		    ElseIf ClientRequest.Path = "/" And Not item.Directory Then
+		      '302 redirect from "/" to "/" + item.name
+		      doc = New Document(302, ClientRequest.Path)
+		      doc.Headers.SetHeader("Location", "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name)
 		    Else
+		      '200 OK
+		      Me.Log("Found page", -2)
 		      doc = New Document(item, ClientRequest.Path)
 		    End If
+		    
 		    doc.Pagedata = ""
 		    
 		  Case RequestMethod.POST
