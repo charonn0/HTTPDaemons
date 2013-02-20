@@ -55,6 +55,26 @@ Inherits TCPSocket
 	#tag EndEvent
 
 
+	#tag Method, Flags = &h21
+		Private Shared Sub CacheCleaner(Sender As Timer)
+		  #pragma Unused Sender
+		  PageCache = New Dictionary
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Shared Function IsCached(ClientRequest As Request) As Boolean
+		  If PageCache.HasKey(ClientRequest.Path) And UseCache Then
+		    'Dim reqDate As Date = HTTPDate(ClientRequest.Headers.GetHeader("If-Modified-Since"))
+		    'Dim cache As HTMLDocument = PageCache.Value(ClientRequest.Path)
+		    'If reqDate <> Nil And reqDate.TotalSeconds >= Cache.Modified.TotalSeconds Then
+		    Return True
+		    'End If
+		  End If
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Sub Log(Message As String, Severity As Integer)
 		  RaiseEvent Log(Message.Trim + EndofLine, Severity)
@@ -91,6 +111,7 @@ Inherits TCPSocket
 		      ResponseDocument.Headers.SetHeader("Connection", "close")
 		    End If
 		  End If
+		  If UseCache Then PageCache.Value(ResponseDocument.Path) = ResponseDocument
 		  Me.Log(HTTPResponse(ResponseDocument.StatusCode), 0)
 		  Me.Log(ResponseDocument.Headers.Source, -1)
 		  Me.Write(ResponseDocument.ToString)
@@ -127,9 +148,58 @@ Inherits TCPSocket
 		AuthenticationRequired As Boolean = False
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Private Shared CacheTimer As Timer
+	#tag EndProperty
+
 	#tag Property, Flags = &h0
 		KeepListening As Boolean = False
 	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared mPageCache As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private Shared mUseCache As Boolean = True
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  If mPageCache = Nil Then mPageCache = New Dictionary
+			  return mPageCache
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mPageCache = value
+			End Set
+		#tag EndSetter
+		Protected Shared PageCache As Dictionary
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mUseCache 'And Not GZIPAvailable
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  If value Then
+			    CacheTimer = New Timer
+			    CacheTimer.Period = 10000
+			    AddHandler CacheTimer.Action, AddressOf CacheCleaner
+			    CacheTimer.Mode = Timer.ModeMultiple
+			  Else
+			    CacheTimer = Nil
+			  End If
+			  mUseCache = value
+			End Set
+		#tag EndSetter
+		Shared UseCache As Boolean
+	#tag EndComputedProperty
 
 
 	#tag Constant, Name = DaemonVersion, Type = String, Dynamic = False, Default = \"QnDHTTPd/1.0", Scope = Public

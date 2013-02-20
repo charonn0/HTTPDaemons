@@ -34,7 +34,6 @@ Inherits HTTPDaemon
 		      Me.Log("Found page", -2)
 		      doc = New HTMLDocument(item, ClientRequest.Path)
 		    End If
-		    If UseCache Then PageCache.Value(ClientRequest.Path) = doc
 		    
 		  Case RequestMethod.HEAD
 		    Dim item As FolderItem = FindItem(ClientRequest.Path)
@@ -65,13 +64,6 @@ Inherits HTTPDaemon
 
 
 	#tag Method, Flags = &h21
-		Private Shared Sub CacheCleaner(Sender As Timer)
-		  #pragma Unused Sender
-		  PageCache = New Dictionary
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Function FindItem(Path As String) As FolderItem
 		  Dim s As String
 		  Path = Path.ReplaceAll("/", "\")
@@ -92,23 +84,6 @@ Inherits HTTPDaemon
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Shared Function IsCached(ClientRequest As Request) As Boolean
-		  If PageCache.HasKey(ClientRequest.Path) And UseCache Then
-		    'Dim reqDate As Date = HTTPDate(ClientRequest.Headers.GetHeader("If-Modified-Since"))
-		    'Dim cache As HTMLDocument = PageCache.Value(ClientRequest.Path)
-		    'If reqDate <> Nil And reqDate.TotalSeconds >= Cache.Modified.TotalSeconds Then
-		    Return True
-		    'End If
-		  End If
-		  
-		End Function
-	#tag EndMethod
-
-
-	#tag Property, Flags = &h21
-		Private Shared CacheTimer As Timer
-	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		DirectoryBrowsing As Boolean = True
@@ -117,51 +92,6 @@ Inherits HTTPDaemon
 	#tag Property, Flags = &h0
 		Document As FolderItem
 	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared mPageCache As Dictionary
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared mUseCache As Boolean = True
-	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  If mPageCache = Nil Then mPageCache = New Dictionary
-			  return mPageCache
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  mPageCache = value
-			End Set
-		#tag EndSetter
-		Shared PageCache As Dictionary
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mUseCache 'And Not GZIPAvailable
-			End Get
-		#tag EndGetter
-		#tag Setter
-			Set
-			  If value Then
-			    CacheTimer = New Timer
-			    CacheTimer.Period = 10000
-			    AddHandler CacheTimer.Action, AddressOf CacheCleaner
-			    CacheTimer.Mode = Timer.ModeMultiple
-			  Else
-			    CacheTimer = Nil
-			  End If
-			  mUseCache = value
-			End Set
-		#tag EndSetter
-		Shared UseCache As Boolean
-	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
