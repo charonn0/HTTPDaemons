@@ -21,7 +21,11 @@ Inherits TCPSocket
 		    End If
 		  End If
 		  
-		  HandleRequest(clientrequest)
+		  If Not Redirects.HasKey(clientrequest.Path) Then
+		    HandleRequest(clientrequest)
+		  Else
+		    SendResponse(Redirects.Value(clientrequest.Path))
+		  End If
 		  
 		Exception Err
 		  If Err IsA EndException Or Err IsA ThreadEndException Then Raise Err
@@ -55,6 +59,12 @@ Inherits TCPSocket
 	#tag EndEvent
 
 
+	#tag Method, Flags = &h0
+		Sub AddRedirect(HTTPpath As String, Page As Document)
+		  Me.Redirects.Value(HTTPpath) = Page
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Shared Sub CacheCleaner(Sender As Timer)
 		  #pragma Unused Sender
@@ -78,6 +88,14 @@ Inherits TCPSocket
 	#tag Method, Flags = &h0
 		Sub Log(Message As String, Severity As Integer)
 		  RaiseEvent Log(Message.Trim + EndofLine, Severity)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub RemoveRedirect(HTTPpath As String)
+		  If Me.Redirects.HasKey(HTTPpath) Then
+		    Me.Redirects.Remove(HTTPpath)
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -167,6 +185,10 @@ Inherits TCPSocket
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mRedirects As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private Shared mUseCache As Boolean = True
 	#tag EndProperty
 
@@ -183,6 +205,21 @@ Inherits TCPSocket
 			End Set
 		#tag EndSetter
 		Protected Shared PageCache As Dictionary
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  If mRedirects = Nil Then mRedirects = New Dictionary
+			  return mRedirects
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mRedirects = value
+			End Set
+		#tag EndSetter
+		Protected Redirects As Dictionary
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
