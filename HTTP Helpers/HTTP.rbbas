@@ -2618,8 +2618,7 @@ Protected Module HTTP
 		  POST
 		  PUT
 		  DELETE
-		  TRACE
-		ClientResponse
+		TRACE
 	#tag EndEnum
 
 

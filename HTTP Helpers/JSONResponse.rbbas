@@ -5,12 +5,17 @@ Inherits Document
 		Sub Constructor(PageSource As String, MIME As String = "text/html")
 		  Me.Pagedata = PageSource
 		  Me.Headers.SetHeader("Content-Type", MIME)
-		  Me.Method = RequestMethod.ClientResponse
 		End Sub
 	#tag EndMethod
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="FromCache"
+			Group="Behavior"
+			Type="Boolean"
+			InheritedFrom="Document"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -33,6 +38,13 @@ Inherits Document
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Pagedata"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+			InheritedFrom="Document"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Path"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"

@@ -16,7 +16,7 @@ Inherits HTTPDaemon
 		  Dim item As FolderItem = FindItem(ClientRequest.Path)
 		  
 		  Select Case ClientRequest.Method
-		  Case RequestMethod.GET
+		  Case RequestMethod.GET, RequestMethod.HEAD
 		    If IsCached(ClientRequest) Then 
 		      'Cache hit
 		      Dim cache As Document = PageCache.Value(ClientRequest.Path)
@@ -44,29 +44,6 @@ Inherits HTTPDaemon
 		      doc = New Document(item, ClientRequest.Path)
 		    End If
 		    
-		  Case RequestMethod.HEAD
-		    If item = Nil Then
-		      '404 Not found
-		      Me.Log("Page not found", -2)
-		      doc = New Document(404, ClientRequest.Path)
-		      
-		    ElseIf item.Directory And Not Me.DirectoryBrowsing Then
-		      '403 Forbidden!
-		      Me.Log("Page is directory and DirectoryBrowsing=False", -2)
-		      doc = New Document(403, ClientRequest.Path)
-		      
-		    ElseIf ClientRequest.Path = "/" And Not item.Directory Then
-		      '302 redirect from "/" to "/" + item.name
-		      doc = New Document(302, ClientRequest.Path)
-		      doc.Headers.SetHeader("Location", "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name)
-		    Else
-		      '200 OK
-		      Me.Log("Found page", -2)
-		      doc = New Document(item, ClientRequest.Path)
-		    End If
-		    
-		    doc.Pagedata = ""
-		    
 		  Case RequestMethod.POST
 		    
 		  Case RequestMethod.TRACE
@@ -80,6 +57,7 @@ Inherits HTTPDaemon
 		  End Select
 		  
 		  If doc <> Nil Then
+		    doc.Method = ClientRequest.Method
 		    Me.SendResponse(doc)
 		  End If
 		End Sub

@@ -27,7 +27,6 @@ Protected Class Document
 		    Me.Headers.SetHeader("Content-Type", MIMEstring(page.Name))
 		  End If
 		  Me.StatusCode = 200
-		  Me.Method = RequestMethod.ClientResponse
 		  Me.Modified = Page.ModificationDate
 		  Me.Path = Path
 		End Sub
@@ -37,7 +36,6 @@ Protected Class Document
 		Sub Constructor(ErrorCode As Integer, Param As String)
 		  Me.StatusCode = ErrorCode
 		  Me.Pagedata = ErrorPage(StatusCode, Param)
-		  Me.Method = RequestMethod.ClientResponse
 		  Me.StatusCode = ErrorCode
 		  Me.Modified = New Date
 		End Sub

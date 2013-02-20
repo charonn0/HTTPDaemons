@@ -166,6 +166,10 @@ Inherits TCPSocket
 		    End If
 		  End If
 		  If UseCache Then PageCache.Value(ResponseDocument.Path) = ResponseDocument
+		  If ResponseDocument.Method = RequestMethod.HEAD Then
+		    ResponseDocument.Headers.SetHeader("Content-Length", Str(ResponseDocument.Pagedata.LenB))
+		    ResponseDocument.Pagedata = ""
+		  End If
 		  Me.Log(HTTPResponse(ResponseDocument.StatusCode), 0)
 		  Me.Log(ResponseDocument.Headers.Source, -1)
 		  Me.Write(ResponseDocument.ToString)
