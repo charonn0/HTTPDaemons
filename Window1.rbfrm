@@ -576,6 +576,7 @@ End
 		  Sock.Port = Val(port.Text)
 		  Sock.Document = SharedFile
 		  'Sock.Authenticate = CheckBox2.Value
+		  Sock.AddRedirect("/foo/bar", New Document(SpecialFolder.Desktop, "/"))
 		  Sock.Listen
 		  ShowURL("http://" + Sock.NetworkInterface.IPAddress + ":" + Str(Sock.Port) + "/")
 		End Sub

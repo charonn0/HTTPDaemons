@@ -24,7 +24,10 @@ Inherits TCPSocket
 		  If Not Redirects.HasKey(clientrequest.Path) Then
 		    HandleRequest(clientrequest)
 		  Else
-		    SendResponse(Redirects.Value(clientrequest.Path))
+		    Dim redir As Document = Redirects.Value(clientrequest.Path)
+		    redir.FromCache = True
+		    Me.Log("Using redirect.", -2)
+		    SendResponse(redir)
 		  End If
 		  
 		Exception Err
