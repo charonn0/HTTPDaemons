@@ -240,7 +240,6 @@ Begin Window Window1
    Begin HTTPFileServer Sock
       Address         =   ""
       AuthenticationRealm=   "Restricted Area"
-      CachePeriod     =   1200000
       DirectoryBrowsing=   True
       Height          =   32
       Index           =   -2147483648
@@ -251,7 +250,6 @@ Begin Window Window1
       Scope           =   0
       TabPanelIndex   =   0
       Top             =   12
-      UseCache        =   ""
       Width           =   32
    End
    Begin ComboBox LogLevel
@@ -751,7 +749,7 @@ End
 	#tag Event
 		Sub Open()
 		  Me.Value = Sock.UseCache
-		  Me.Enabled = Not GZIPAvailable
+		  'Me.Enabled = Not GZIPAvailable
 		End Sub
 	#tag EndEvent
 #tag EndEvents

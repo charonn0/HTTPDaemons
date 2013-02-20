@@ -19,6 +19,8 @@ Inherits HTTPDaemon
 		    If IsCached(ClientRequest) Then
 		      Dim cache As HTMLDocument = PageCache.Value(ClientRequest.Path)
 		      doc = New HTMLDocument(cache, ClientRequest.Path)
+		      doc.FromCache = True
+		      Me.Log("Page from cache", -2)
 		      
 		    ElseIf item = Nil Then
 		      Me.Log("Page not found", -2)
@@ -142,7 +144,7 @@ Inherits HTTPDaemon
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
-			  return mUseCache And Not GZIPAvailable
+			  return mUseCache 'And Not GZIPAvailable
 			End Get
 		#tag EndGetter
 		#tag Setter
@@ -185,12 +187,6 @@ Inherits HTTPDaemon
 			InitialValue="False"
 			Type="Boolean"
 			InheritedFrom="HTTPDaemon"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="CachePeriod"
-			Group="Behavior"
-			InitialValue="1200000"
-			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DirectoryBrowsing"
@@ -247,11 +243,6 @@ Inherits HTTPDaemon
 			Group="Position"
 			Type="Integer"
 			InheritedFrom="TCPSocket"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="UseCache"
-			Group="Behavior"
-			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

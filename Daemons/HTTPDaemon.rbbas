@@ -63,31 +63,33 @@ Inherits TCPSocket
 
 	#tag Method, Flags = &h1
 		Protected Sub SendResponse(ResponseDocument As Document)
-		  Dim tmp As Document = ResponseDocument
-		  If TamperResponse(tmp) Then
-		    Me.Log("Outbound tamper.", -2)
-		    ResponseDocument  = tmp
-		  End If
-		  
-		  #If GZIPAvailable Then
-		    Me.Log("Running gzip", -2)
-		    ResponseDocument.Headers.SetHeader("Content-Encoding", "gzip")
-		    Dim gz As String
-		    Try
-		      gz = GZipPage(Replace(ResponseDocument.PageData, "%PAGEGZIPSTATUS%", "Compressed with GZip " + GZip.Version))
-		      ResponseDocument.pagedata = gz
-		    Catch Error
-		      'Just send the uncompressed data
-		      ResponseDocument.Headers.SetHeader("Content-Encoding", "Identity")
-		    End Try
-		    ResponseDocument.Headers.SetHeader("Content-Length", Str(ResponseDocument.Pagedata.LenB))
-		  #else
-		    ResponseDocument.PageData = Replace(ResponseDocument.PageData, "%PAGEGZIPSTATUS%", "No compression.")
-		  #endif
-		  If Me.KeepListening Then
-		    ResponseDocument.Headers.SetHeader("Connection", "keep-alive")
-		  Else
-		    ResponseDocument.Headers.SetHeader("Connection", "close")
+		  If Not ResponseDocument.FromCache Then
+		    Dim tmp As Document = ResponseDocument
+		    If TamperResponse(tmp) Then
+		      Me.Log("Outbound tamper.", -2)
+		      ResponseDocument  = tmp
+		    End If
+		    
+		    #If GZIPAvailable Then
+		      Me.Log("Running gzip", -2)
+		      ResponseDocument.Headers.SetHeader("Content-Encoding", "gzip")
+		      Dim gz As String
+		      Try
+		        gz = GZipPage(Replace(ResponseDocument.PageData, "%PAGEGZIPSTATUS%", "Compressed with GZip " + GZip.Version))
+		        ResponseDocument.pagedata = gz
+		      Catch Error
+		        'Just send the uncompressed data
+		        ResponseDocument.Headers.SetHeader("Content-Encoding", "Identity")
+		      End Try
+		      ResponseDocument.Headers.SetHeader("Content-Length", Str(ResponseDocument.Pagedata.LenB))
+		    #else
+		      ResponseDocument.PageData = Replace(ResponseDocument.PageData, "%PAGEGZIPSTATUS%", "No compression.")
+		    #endif
+		    If Me.KeepListening Then
+		      ResponseDocument.Headers.SetHeader("Connection", "keep-alive")
+		    Else
+		      ResponseDocument.Headers.SetHeader("Connection", "close")
+		    End If
 		  End If
 		  Me.Log(HTTPResponse(ResponseDocument.StatusCode), 0)
 		  Me.Log(ResponseDocument.Headers.Source, -1)

@@ -12,6 +12,7 @@ Protected Class Document
 		  Me.StatusCode = 200
 		  Me.Modified = CachedPage.Modified
 		  Me.Path = Path
+		  mHeaders = CachedPage.Headers
 		End Sub
 	#tag EndMethod
 
@@ -274,6 +275,10 @@ Protected Class Document
 	#tag EndHook
 
 
+	#tag Property, Flags = &h0
+		FromCache As Boolean
+	#tag EndProperty
+
 	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
@@ -417,6 +422,11 @@ Protected Class Document
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Path"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StatusCode"
