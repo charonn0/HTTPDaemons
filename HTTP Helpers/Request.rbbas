@@ -7,7 +7,7 @@ Protected Class Request
 		  data = Replace(data, line + CRLF, "")
 		  Me.PostContent = NthField(data, CRLF + CRLF, 2)
 		  data = Replace(data, Me.PostContent, "")
-		  Me.Headers = ParseRawHeaders(data)
+		  Me.Headers = New HTTPHeaders(data)
 		  verb = NthField(line, " ", 1).Trim
 		  Select Case verb
 		  Case "GET"
@@ -26,7 +26,7 @@ Protected Class Request
 		  
 		  Me.Path = URLDecode(NthField(line, " ", 2).Trim)
 		  Me.ProtocolVersion = CDbl(Replace(NthField(line, " ", 3).Trim, "HTTP/", ""))
-		  Me.Cookies = GetCookies(Me.Headers)
+		  Me.Cookies = Me.Headers.GetCookies
 		  Me.Expiry = New Date
 		  Me.Expiry.TotalSeconds = Me.Expiry.TotalSeconds + 60
 		End Sub
@@ -71,7 +71,7 @@ Protected Class Request
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Headers As InternetHeaders
+		Headers As HTTPHeaders
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

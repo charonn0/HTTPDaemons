@@ -9,6 +9,7 @@ Class=JSONAPIServer;Daemons/JSONAPIServer.rbbas;&h6AE53FFF;&h5F68A7FF;false
 Class=HTTPFileServer;Daemons/HTTPFileServer.rbbas;&h6AA717FF;&h5F68A7FF;false
 Class=HTTPDaemon;Daemons/HTTPDaemon.rbbas;&h1B4C27FF;&h5F68A7FF;false
 Folder=HTTP Helpers;HTTP Helpers;&h72732FFF;&h0;false
+Class=HTTPHeaders;HTTP Helpers/HTTPHeaders.rbbas;&h7F41E7FF;&h72732FFF;false
 Class=CaughtException;HTTP Helpers/CaughtException.rbbas;&h55C5AFFF;&h72732FFF;false
 Class=Request;HTTP Helpers/Request.rbbas;&h27E527FF;&h72732FFF;false
 Module=HTTP;HTTP Helpers/HTTP.rbbas;&h578487FF;&h72732FFF;false

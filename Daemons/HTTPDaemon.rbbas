@@ -11,7 +11,7 @@ Inherits TCPSocket
 		    clientrequest = tmp
 		  End If
 		  If Me.AuthenticationRequired Then
-		    Dim pw As String = GetHeader(ClientRequest.Headers, "Authorization")
+		    Dim pw As String = ClientRequest.Headers.GetHeader("Authorization")
 		    pw = pw.Replace("Basic ", "")
 		    If Not Authenticate(pw) Then
 		      Dim doc As Document = New Document(401, clientrequest.Path)

@@ -174,7 +174,7 @@ Protected Class Document
 
 	#tag Method, Flags = &h0
 		Function GetCookie(CookieName As String) As Cookie
-		  Dim Cookies() As Cookie = GetCookies(Me.Headers)
+		  Dim Cookies() As Cookie = Me.Headers.GetCookies
 		  For i As Integer = 0 To UBound(Cookies)
 		    If Cookies(i).Name = CookieName Then
 		      Return Cookies(i)
@@ -252,9 +252,7 @@ Protected Class Document
 
 	#tag Method, Flags = &h0
 		Sub SetCookie(NewCookie As Cookie)
-		  Dim Cookies() As Cookie = GetCookies(Me.Headers)
-		  Cookies.Append(NewCookie)
-		  Me.Headers = SetCookies(Me.Headers, Cookies)
+		  Me.Headers.SetCookie(NewCookie)
 		End Sub
 	#tag EndMethod
 
@@ -283,7 +281,7 @@ Protected Class Document
 		#tag Getter
 			Get
 			  If mHeaders = Nil Then
-			    mHeaders = New InternetHeaders
+			    mHeaders = New HTTPHeaders
 			    Dim now As New Date
 			    mHeaders.AppendHeader("Date", HTTPDate(now))
 			    If Me.Pagedata.LenB > 0 Then
@@ -304,7 +302,7 @@ Protected Class Document
 			  mHeaders = value
 			End Set
 		#tag EndSetter
-		Headers As InternetHeaders
+		Headers As HTTPHeaders
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
@@ -312,7 +310,7 @@ Protected Class Document
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mHeaders As InternetHeaders
+		Private mHeaders As HTTPHeaders
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -398,6 +396,11 @@ Protected Class Document
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="FromCache"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -427,6 +430,7 @@ Protected Class Document
 			Name="Path"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StatusCode"

@@ -59,42 +59,6 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetCookies(Headers As InternetHeaders) As Cookie()
-		  'Returns a string array of all HTTP cookies in the passed headers
-		  Dim cookies() As Cookie
-		  Dim head As String = GetHeader(Headers, "Cookie")
-		  Dim c() As String = Split(head, ";")
-		  For Each cook As String In c
-		    Dim l, r As String
-		    l = NthField(cook, "=", 1).Trim
-		    r = NthField(cook, "=", 2).Trim
-		    cookies.Append(New Cookie(l, r))
-		  Next
-		  
-		  Return cookies
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetHeader(Extends h As InternetHeaders, Name As String) As String
-		  Return h.Value(Name)
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function GetHeader(Headers As InternetHeaders, Headername As String) As String
-		  'Returns a string array of all HTTP cookies in the passed headers
-		  For i As Integer = 0 To Headers.Count - 1
-		    If Headers.Name(i) = headername Then
-		      Return Headers.Value(i)
-		    End If
-		  Next
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function GZipPage(PageData As String) As String
 		  'This function requires the GZip plugin available at http://sourceforge.net/projects/realbasicgzip/
 		  'Returns the passed PageData after being compressed. If GZIPAvailable = false, returns the original PageData unchanged.
@@ -120,14 +84,6 @@ Protected Module HTTP
 		    #pragma Warning "The GZip Plugin is not available or has been disabled."
 		    Return PageData
 		  #EndIf
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function HasHeader(Extends Headers As InternetHeaders, HeaderName As String) As Boolean
-		  For i As Integer = 0 To Headers.Count - 1
-		    If Headers.Name(i) = HeaderName Then Return True
-		  Next
 		End Function
 	#tag EndMethod
 
@@ -2581,22 +2537,8 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ParseRawHeaders(Data As String) As InternetHeaders
-		  Dim headers As New InternetHeaders
-		  Dim lines() As String = data.Split(CRLF)
-		  
-		  For i As Integer = 0 To UBound(lines)
-		    Dim line As String = lines(i)
-		    If Instr(line, ": ") <= 1  Or line.Trim = "" Then Continue
-		    headers.AppendHeader(NthField(line, ": ", 1), NthField(line, ": ", 2))
-		  Next
-		  Return headers
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function RemoveHeader(Headers As InternetHeaders, Headername As String) As InternetHeaders
-		  Dim h As New InternetHeaders
+		Function RemoveHeader(Headers As HTTPHeaders, Headername As String) As HTTPHeaders
+		  Dim h As New HTTPHeaders
 		  For i As Integer = 0 To Headers.Count - 1
 		    If Headers.Name(i) <> headername Then
 		      h.AppendHeader(Headers.Name(i), Headers.Value(i))
@@ -2631,7 +2573,7 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function SetCookies(Headers As InternetHeaders, Cookies() As Cookie) As InternetHeaders
+		Function SetCookies(Headers As HTTPHeaders, Cookies() As Cookie) As HTTPHeaders
 		  Dim value As String
 		  
 		  For i As Integer = 0 To UBound(Cookies)
