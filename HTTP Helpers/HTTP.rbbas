@@ -59,35 +59,6 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GZipPage(PageData As String) As String
-		  'This function requires the GZip plugin available at http://sourceforge.net/projects/realbasicgzip/
-		  'Returns the passed PageData after being compressed. If GZIPAvailable = false, returns the original PageData unchanged.
-		  #If GZipAvailable Then'
-		    Dim size As Single = PageData.LenB
-		    If size > 2^26 Then Return PageData 'if bigger than 64MB, don't try compressing it.
-		    System.DebugLog(App.ExecutableFile.Name + ": About to GZip data. Size: " + FormatBytes(size))
-		    PageData = GZip.Compress(PageData)
-		    size = PageData.LenB * 100 / size
-		    System.DebugLog(App.ExecutableFile.Name + ": GZip done. New size: " + FormatBytes(PageData.LenB) + " (" + Format(size, "##0.0##\%") + " of original.)")
-		    If GZip.Error <> 0 Then
-		      Raise New RuntimeException
-		    End If
-		    Dim mb As New MemoryBlock(PageData.LenB + 8)
-		    'magic
-		    mb.Byte(0) = &h1F
-		    mb.Byte(1) = &h8B
-		    mb.Byte(2) = &h08
-		    mb.StringValue(8, PageData.LenB) = PageData
-		    Return mb
-		  #Else
-		    'QnDHTTPd.GZIPAvailable must be set to True and the GZip plugin must be installed.
-		    #pragma Warning "The GZip Plugin is not available or has been disabled."
-		    Return PageData
-		  #EndIf
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function HTTPDate(d As Date) As String
 		  Dim dt As String
 		  d.GMTOffset = 0
@@ -2537,18 +2508,6 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function RemoveHeader(Headers As HTTPHeaders, Headername As String) As HTTPHeaders
-		  Dim h As New HTTPHeaders
-		  For i As Integer = 0 To Headers.Count - 1
-		    If Headers.Name(i) <> headername Then
-		      h.AppendHeader(Headers.Name(i), Headers.Value(i))
-		    End If
-		  Next
-		  Return h
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub ReRaise(Error As RuntimeException)
 		  'Used in conjunction with the CaughtException class, this method re-raises the passed RuntimeException
 		  'without overwriting the original exception's Stack property. Further discussion and code from:
@@ -2570,19 +2529,6 @@ Protected Module HTTP
 		  Raise New CaughtException(Error)
 		  
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function SetCookies(Headers As HTTPHeaders, Cookies() As Cookie) As HTTPHeaders
-		  Dim value As String
-		  
-		  For i As Integer = 0 To UBound(Cookies)
-		    Dim cook As String = Cookies(i).Name + "=" + Cookies(i).Value + ";"
-		    value = value + cook
-		  Next
-		  Headers.SetHeader("Set-Cookie", value)
-		  Return Headers
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -2664,10 +2610,6 @@ Protected Module HTTP
 		  
 		End Function
 	#tag EndMethod
-
-
-	#tag Constant, Name = GZIPAvailable, Type = Boolean, Dynamic = False, Default = \"True", Scope = Public
-	#tag EndConstant
 
 
 	#tag Enum, Name = RequestMethod, Flags = &h0

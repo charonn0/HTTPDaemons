@@ -612,8 +612,8 @@ End
 #tag Events CheckBox1
 	#tag Event
 		Sub Open()
-		  Me.Value = GZIPAvailable
-		  Me.Enabled = GZIPAvailable
+		  Me.Value = HTTPDaemon.GZIPAvailable
+		  Me.Enabled = HTTPDaemon.GZIPAvailable
 		End Sub
 	#tag EndEvent
 	#tag Event
