@@ -31,8 +31,15 @@ Inherits HTTPDaemon
 		      doc = New Document(403, ClientRequest.Path)
 		      
 		    Else
-		      Me.Log("Found page", -2)
-		      doc = New Document(item, ClientRequest.Path)
+		      If ClientRequest.Path = "/" And Not item.Directory Then 
+		        'they want the root item but it's not a directory
+		        'We'll send a 302 redirect from "/" to "/" + item.name
+		        doc = New Document(302, ClientRequest.Path)
+		        doc.Headers.SetHeader("Location", "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name)
+		      Else
+		        Me.Log("Found page", -2)
+		        doc = New Document(item, ClientRequest.Path)
+		      End If
 		    End If
 		    
 		  Case RequestMethod.HEAD
