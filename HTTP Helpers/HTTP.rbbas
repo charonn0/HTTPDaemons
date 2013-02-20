@@ -2508,30 +2508,6 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ReRaise(Error As RuntimeException)
-		  'Used in conjunction with the CaughtException class, this method re-raises the passed RuntimeException
-		  'without overwriting the original exception's Stack property. Further discussion and code from:
-		  'http://www.realsoftwareblog.com/2012/07/preserving-stack-trace-when-catching.html
-		  '
-		  'Example usage:
-		  'Try
-		  ' //Blah blah
-		  'Catch Error As SomeException
-		  ' //Cleanup the db, maybe logging and user notification, etc.
-		  ' //all done, ReRaise it.
-		  '  ReRaise Error
-		  'End Try
-		  #pragma BreakOnExceptions Off
-		  If Error.Message = "" Then
-		    Error.Message = Introspection.GetType(Error).Name
-		  End If
-		  
-		  Raise New CaughtException(Error)
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Function URLDecode(s as String) As String
 		  'This method is from here: https://github.com/bskrtich/RBHTTPServer
 		  // takes a Unix-encoded string and decodes it to the standard text encoding.

@@ -78,10 +78,6 @@ Inherits HTTPDaemon
 		  If item <> Nil And item.Exists Then
 		    Return item
 		  End If
-		  
-		Exception Err
-		  If Err IsA EndException Or Err IsA ThreadEndException Then Raise Err
-		  ReRaise(Err)
 		End Function
 	#tag EndMethod
 
