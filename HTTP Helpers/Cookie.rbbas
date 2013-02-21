@@ -12,7 +12,7 @@ Inherits Pair
 
 	#tag Method, Flags = &h0
 		Function Expires() As Date
-		  Return Me.Expires
+		  Return Me.Expiry
 		End Function
 	#tag EndMethod
 
