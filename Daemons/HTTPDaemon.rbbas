@@ -13,9 +13,16 @@ Inherits TCPSocket
 		  If Me.AuthenticationRequired Then
 		    Dim pw As String = ClientRequest.Headers.GetHeader("Authorization")
 		    pw = pw.Replace("Basic ", "")
-		    If Not Authenticate(pw) Then
+		    If Not Authenticate(pw, clientrequest.Path, clientrequest.MethodName) Then
 		      Dim doc As Document = New Document(401, clientrequest.Path)
-		      doc.Headers.SetHeader("WWW-Authenticate", "Basic realm=""" + Me.AuthenticationRealm + """")
+		      Select Case Me.AuthType
+		      Case 1 'basic
+		        doc.Headers.SetHeader("WWW-Authenticate", "Basic realm=""" + Me.AuthenticationRealm + """")
+		      Case 2 'digest
+		        'Work in progress
+		        Dim rand As New Random
+		        doc.Headers.SetHeader("WWW-Authenticate", "Digest realm=""" + Me.AuthenticationRealm + """,qop=""auth"",nonce=""" + Str(Rand.InRange(50000, 100000)))
+		      End Select
 		      Me.SendResponse(doc)
 		      Return
 		    End If
@@ -187,7 +194,7 @@ Inherits TCPSocket
 
 
 	#tag Hook, Flags = &h0
-		Event Authenticate(AuthString As String) As Boolean
+		Event Authenticate(AuthString As String, HTTPPath As String, Method As String) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -208,11 +215,15 @@ Inherits TCPSocket
 
 
 	#tag Property, Flags = &h0
-		AuthenticationRealm As String = """Restricted Area"""
+		AuthenticationRealm As String = "Restricted Area"
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		AuthenticationRequired As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		AuthType As Integer = 0
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -316,6 +327,19 @@ Inherits TCPSocket
 			Group="Behavior"
 			InitialValue="False"
 			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AuthType"
+			Visible=true
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			EditorType="Enum"
+			#tag EnumValues
+				"0 - None"
+				"1 - Basic"
+				"2 - Digest"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"

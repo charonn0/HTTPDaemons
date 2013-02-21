@@ -17,7 +17,7 @@ Inherits HTTPDaemon
 		  
 		  Select Case ClientRequest.Method
 		  Case RequestMethod.GET, RequestMethod.HEAD
-		    If IsCached(ClientRequest) Then 
+		    If IsCached(ClientRequest) Then
 		      'Cache hit
 		      Dim cache As Document = PageCache.Value(ClientRequest.Path)
 		      doc = New Document(cache, ClientRequest.Path)
@@ -34,7 +34,7 @@ Inherits HTTPDaemon
 		      Me.Log("Page is directory and DirectoryBrowsing=False", -2)
 		      doc = New Document(403, ClientRequest.Path)
 		      
-		    ElseIf ClientRequest.Path = "/" And Not item.Directory Then 
+		    ElseIf ClientRequest.Path = "/" And Not item.Directory Then
 		      '302 redirect from "/" to "/" + item.name
 		      doc = New Document(302, ClientRequest.Path)
 		      doc.Headers.SetHeader("Location", "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name)
@@ -110,10 +110,25 @@ Inherits HTTPDaemon
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AuthenticationRequired"
+			Visible=true
 			Group="Behavior"
 			InitialValue="False"
 			Type="Boolean"
 			InheritedFrom="HTTPDaemon"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AuthType"
+			Visible=true
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			EditorType="Enum"
+			InheritedFrom="HTTPDaemon"
+			#tag EnumValues
+				"0 - None"
+				"1 - Basic"
+				"2 - Digest"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DirectoryBrowsing"
