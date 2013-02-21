@@ -70,8 +70,8 @@ Inherits TCPSocket
 
 
 	#tag Method, Flags = &h0
-		Sub AddRedirect(HTTPpath As String, Page As Document)
-		  Me.Redirects.Value(HTTPpath) = Page
+		Sub AddRedirect(Page As Document)
+		  Me.Redirects.Value(Page.Path) = Page
 		End Sub
 	#tag EndMethod
 

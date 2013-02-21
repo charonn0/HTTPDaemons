@@ -41,6 +41,15 @@ Protected Class Document
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub Constructor(Path As String, RedirectURL As String)
+		  Me.StatusCode = 302
+		  Me.Modified = New Date
+		  Me.Path = Path
+		  Headers.AppendHeader("Location", RedirectURL)
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Shared Function DirectoryIndex(serverpath As String, f As FolderItem) As String
 		  Dim timestart, timestop As UInt64
