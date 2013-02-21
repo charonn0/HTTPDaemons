@@ -696,9 +696,9 @@ End
 		    End If
 		  Case 2 'Digest
 		    'Work in progress
-		    Dim HA1, HA2 As String
-		    HA1 = password.Text + ":" + realmtext.Text + ":" + password.Text
-		    HA1 = MD5(HA1)
+		    'Dim HA1, HA2 As String
+		    'HA1 = password.Text + ":" + realmtext.Text + ":" + password.Text
+		    'HA1 = MD5(HA1)
 		    
 		    
 		  End Select

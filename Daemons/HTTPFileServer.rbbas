@@ -66,15 +66,15 @@ Inherits HTTPDaemon
 
 	#tag Method, Flags = &h21
 		Private Function FindItem(Path As String) As FolderItem
-		  Dim s As String
 		  Path = Path.ReplaceAll("/", "\")
 		  
 		  If Not Document.Directory And "\" + Document.Name = path Then
 		    Return Document
 		  End If
 		  
-		  s = ReplaceAll(Document.AbsolutePath + Path, "\\", "\")
-		  Dim item As FolderItem = GetTrueFolderItem(s, FolderItem.PathTypeAbsolute)
+		  Path = ReplaceAll(Document.AbsolutePath + Path, "\\", "\")
+		  Dim item As FolderItem = GetTrueFolderItem(Path, FolderItem.PathTypeAbsolute)
+		  
 		  If item <> Nil And item.Exists Then
 		    Return item
 		  End If
