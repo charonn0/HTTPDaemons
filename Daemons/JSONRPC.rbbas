@@ -1,18 +1,18 @@
 #tag Class
-Protected Class JSONAPIServer
+Protected Class JSONRPC
 Inherits HTTPDaemon
 	#tag Event
 		Sub HandleRequest(ClientRequest As Request)
 		  Dim js As JSONItem
 		  Dim data As String = ClientRequest.PostContent
 		  js = New JSONItem(data)
-		  APIMessage(js)
+		  RPCMessage(js, ClientRequest.Headers, ClientRequest.Method)
 		End Sub
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h0
-		Sub SendAPIOutput(Output As JSONItem)
+		Sub SendRPCOutput(Output As JSONItem)
 		  Output.Compact = True
 		  Dim doc As New JSONResponse(Output.ToString, "text/json")
 		  doc.StatusCode = 200
@@ -22,7 +22,7 @@ Inherits HTTPDaemon
 
 
 	#tag Hook, Flags = &h0
-		Event APIMessage(Message As JSONItem)
+		Event RPCMessage(Message As JSONItem, Headers As HTTPHeaders, HTTPMethod As RequestMethod)
 	#tag EndHook
 
 
@@ -49,6 +49,20 @@ Inherits HTTPDaemon
 			InitialValue="False"
 			Type="Boolean"
 			InheritedFrom="HTTPDaemon"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AuthType"
+			Visible=true
+			Group="Behavior"
+			InitialValue="0"
+			Type="Integer"
+			EditorType="Enum"
+			InheritedFrom="HTTPDaemon"
+			#tag EnumValues
+				"0 - None"
+				"1 - Basic"
+				"2 - Digest"
+			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
