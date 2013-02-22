@@ -25,6 +25,9 @@ Protected Class Request
 		  End Select
 		  
 		  Me.Path = URLDecode(NthField(line, " ", 2).Trim)
+		  Dim tmp As String = NthField(Me.Path, "?", 2)
+		  path = Replace(path, "?" + tmp, "")
+		  Me.Arguments = Split(tmp, "&")
 		  Me.ProtocolVersion = CDbl(Replace(NthField(line, " ", 3).Trim, "HTTP/", ""))
 		  Me.Cookies = Me.Headers.GetCookies
 		  Me.Expiry = New Date
@@ -61,6 +64,10 @@ Protected Class Request
 		End Function
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h0
+		Arguments() As String
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		Cookies() As Cookie
