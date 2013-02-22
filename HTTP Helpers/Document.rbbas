@@ -24,7 +24,7 @@ Protected Class Document
 		    Dim bs As BinaryStream = BinaryStream.Open(page)
 		    Me.Pagedata = bs.Read(bs.Length)
 		    bs.Close
-		    Me.Headers.SetHeader("Content-Type", MIMEstring(page.Name))
+		    Me.Headers.SetHeader("Content-Type", HTTPDaemon.MIMEstring(page.Name))
 		  End If
 		  Me.StatusCode = 200
 		  Me.Modified = Page.ModificationDate
@@ -98,7 +98,7 @@ Protected Class Document
 		      Else
 		        icon = MIMEIcon(NthField(name, ".", CountFields(name, ".")))
 		        line = ReplaceAll(line, "%FILESIZE%", FormatBytes(f.TrueItem(i).Length))
-		        line = ReplaceAll(line, "%FILETYPE%", MIMEstring(f.TrueItem(i).Name))
+		        line = ReplaceAll(line, "%FILETYPE%", HTTPDaemon.MIMEstring(f.TrueItem(i).Name))
 		      End if
 		      line = ReplaceAll(line, "%FILEICON%", icon)
 		      If i Mod 2 = 0 Then
