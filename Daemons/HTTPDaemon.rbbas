@@ -88,6 +88,18 @@ Inherits TCPSocket
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		 Shared Function DecodeFormData(PostData As String) As Dictionary
+		  Dim items() As String = Split(PostData, "&")
+		  Dim form As New Dictionary
+		  For i As Integer = 0 To UBound(items)
+		    form.Value(URLDecode(NthField(items(i), "=", 1))) = URLDecode(NthField(items(i), "=", 2))
+		  Next
+		  
+		  Return form
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Shared Function GZipPage(PageData As String) As String
 		  'This function requires the GZip plugin available at http://sourceforge.net/projects/realbasicgzip/
@@ -2389,6 +2401,10 @@ Inherits TCPSocket
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private Shared mURLDB As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private Shared mUseCache As Boolean = True
 	#tag EndProperty
 
@@ -2420,6 +2436,16 @@ Inherits TCPSocket
 			End Set
 		#tag EndSetter
 		Protected Redirects As Dictionary
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h1
+		#tag Getter
+			Get
+			  If mURLDB = Nil Then mURLDB = New Dictionary
+			  return mURLDB
+			End Get
+		#tag EndGetter
+		Protected Shared URLDB As Dictionary
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -2491,6 +2517,7 @@ Inherits TCPSocket
 			Name="Index"
 			Visible=true
 			Group="ID"
+			Type="Integer"
 			InheritedFrom="TCPSocket"
 		#tag EndViewProperty
 		#tag ViewProperty
