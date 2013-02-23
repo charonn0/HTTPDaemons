@@ -70,14 +70,14 @@ Inherits TCPSocket
 
 
 	#tag Method, Flags = &h0
-		Sub AddMIMEType(FileExtension As String, MIMEName As String)
+		 Shared Sub AddMIMEType(FileExtension As String, MIMEName As String)
 		  MIMETypes.Value(FileExtension) = MIMEName
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub AddRedirect(Page As Document)
-		  Me.Redirects.Value(Page.Path) = Page
+		 Shared Sub AddRedirect(Page As Document)
+		  HTTPDaemon.Redirects.Value(Page.Path) = Page
 		End Sub
 	#tag EndMethod
 
@@ -2267,7 +2267,7 @@ Inherits TCPSocket
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub RemoveMIMEType(FileExtension As String)
+		 Shared Sub RemoveMIMEType(FileExtension As String)
 		  If MIMETypes.HasKey(FileExtension) Then
 		    MIMETypes.Remove(FileExtension)
 		  End If
@@ -2275,9 +2275,9 @@ Inherits TCPSocket
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub RemoveRedirect(HTTPpath As String)
-		  If Me.Redirects.HasKey(HTTPpath) Then
-		    Me.Redirects.Remove(HTTPpath)
+		 Shared Sub RemoveRedirect(HTTPpath As String)
+		  If HTTPDaemon.Redirects.HasKey(HTTPpath) Then
+		    HTTPDaemon.Redirects.Remove(HTTPpath)
 		  End If
 		End Sub
 	#tag EndMethod
@@ -2397,11 +2397,7 @@ Inherits TCPSocket
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mRedirects As Dictionary
-	#tag EndProperty
-
-	#tag Property, Flags = &h21
-		Private Shared mURLDB As Dictionary
+		Private Shared mRedirects As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -2435,17 +2431,7 @@ Inherits TCPSocket
 			  mRedirects = value
 			End Set
 		#tag EndSetter
-		Protected Redirects As Dictionary
-	#tag EndComputedProperty
-
-	#tag ComputedProperty, Flags = &h1
-		#tag Getter
-			Get
-			  If mURLDB = Nil Then mURLDB = New Dictionary
-			  return mURLDB
-			End Get
-		#tag EndGetter
-		Protected Shared URLDB As Dictionary
+		Protected Shared Redirects As Dictionary
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0

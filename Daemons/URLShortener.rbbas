@@ -31,8 +31,8 @@ Inherits HTTPDaemon
 		 Shared Function ClickShortURL(ShortPath As String) As Document
 		  Dim doc As Document
 		  If Left(Shortpath, 1) = "/" Then Shortpath = Replace(Shortpath, "/", "")
-		  If URLDB.HasKey(Shortpath) Then
-		    doc = URLDB.Value(Shortpath)
+		  If HTTPDaemon.Redirects.HasKey(Shortpath) Then
+		    doc = HTTPDaemon.Redirects.Value(Shortpath)
 		    
 		  Else
 		    doc = New Document(404, ShortPath)
@@ -56,8 +56,8 @@ Inherits HTTPDaemon
 
 	#tag Method, Flags = &h0
 		Function CreateShortURL(ShortPath As String, Location As String) As Document
-		  URLDB.Value(ShortPath) = New Document(ShortPath, Location)
-		  Return URLDB.Value(ShortPath)
+		  HTTPDaemon.Redirects.Value(ShortPath) = New Document(ShortPath, Location)
+		  Return HTTPDaemon.Redirects.Value(ShortPath)
 		End Function
 	#tag EndMethod
 
