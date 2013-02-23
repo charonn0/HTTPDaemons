@@ -8,6 +8,7 @@ Protected Class Document
 
 	#tag Method, Flags = &h0
 		Sub Constructor(CachedPage As Document, Path As String)
+		  'Use this constructor to create a document from another document
 		  Me.Pagedata = CachedPage.Pagedata
 		  Me.StatusCode = 200
 		  Me.Modified = CachedPage.Modified
@@ -18,6 +19,7 @@ Protected Class Document
 
 	#tag Method, Flags = &h0
 		Sub Constructor(page As FolderItem, Path As String)
+		  'Use this constructor to create a Document from a FolderItem (file or directory)
 		  If page.Directory Then
 		    Me.Pagedata = DirectoryIndex(Path, page)
 		  Else
@@ -34,6 +36,8 @@ Protected Class Document
 
 	#tag Method, Flags = &h0
 		Sub Constructor(ErrorCode As Integer, Param As String)
+		  'Use this constructor to create an error Document with the specified HTTP ErrorCode
+		  'Param is an error-dependant datum; e.g. doc = New Document(404, "/doesntexist/file.txt")
 		  Me.StatusCode = ErrorCode
 		  Me.Pagedata = ErrorPage(StatusCode, Param)
 		  Me.StatusCode = ErrorCode
@@ -43,6 +47,7 @@ Protected Class Document
 
 	#tag Method, Flags = &h0
 		Sub Constructor(Path As String, RedirectURL As String)
+		  'Use this constructor to create a 302 redirect Document
 		  Me.StatusCode = 302
 		  Me.Modified = New Date
 		  Me.Path = Path

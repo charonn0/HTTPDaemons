@@ -19,7 +19,9 @@ Inherits HTTPDaemon
 		    doc = CreateShortURL(formdata.Value("ShortName"), formdata.Value("URL"))
 		    
 		  Else
-		    
+		    doc = New Document(405, ClientRequest.MethodName)
+		    doc.Headers.SetHeader("Allow", "GET, POST")
+		    doc.Pagedata = ""
 		  End Select
 		  
 		  Me.SendResponse(doc)
