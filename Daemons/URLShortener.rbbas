@@ -9,7 +9,7 @@ Inherits HTTPDaemon
 		  Case RequestMethod.GET
 		    If ClientRequest.Path = "/Create" Then
 		      doc = New Document(200, ClientRequest.Path)
-		      doc.Pagedata = NEWURLPAGE
+		      doc.Pagedata = ReplaceAll(NEWURLPAGE, "%SIGNATURE%", "<em>Powered By " + HTTPDaemon.DaemonVersion + "</em><br />")
 		    Else
 		      doc = ClickShortURL(ClientRequest.Path)
 		    End If
@@ -62,7 +62,7 @@ Inherits HTTPDaemon
 	#tag EndMethod
 
 
-	#tag Constant, Name = NEWURLPAGE, Type = String, Dynamic = False, Default = \"<html>\r\t<head>\r\t\t<title>HTML Online Editor Sample</title>\r\t</head>\r\t<body>\r\t\t<form action\x3D\"/Create\" enctype\x3D\"application/x-www-form-urlencoded\" id\x3D\"URLs\" method\x3D\"post\" name\x3D\"URLs\" target\x3D\"_self\">\r\t\t\t<br />\r\t\t\t<input maxlength\x3D\"25\" name\x3D\"ShortName\" size\x3D\"25\" type\x3D\"text\" />&nbsp; <input maxlength\x3D\"255\" name\x3D\"URL\" size\x3D\"50\" type\x3D\"text\" value\x3D\"http://\" /> <input name\x3D\"Submit\" type\x3D\"submit\" value\x3D\"Shorten\" />&nbsp;</form>\r\t</body>\r</html>", Scope = Public
+	#tag Constant, Name = NEWURLPAGE, Type = String, Dynamic = False, Default = \"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r<html xmlns\x3D\"http://www.w3.org/1999/xhtml\">\r<head>\r<meta http-equiv\x3D\"Content-Type\" content\x3D\"text/html; charset\x3Diso-8859-1\" />\r<title>URL Shortener</title>\r<style type\x3D\"text/css\">\r<!--\rbody\x2Ctd\x2Cth {\r\tfont-family: Arial\x2C Helvetica\x2C sans-serif;\r\tfont-size: medium;\r}\ra:link {\r\tcolor: #0000FF;\r\ttext-decoration: none;\r}\ra:visited {\r\ttext-decoration: none;\r\tcolor: #990000;\r}\ra:hover {\r\ttext-decoration: underline;\r\tcolor: #009966;\r}\ra:active {\r\ttext-decoration: none;\r\tcolor: #FF0000;\r}\r-->\r</style></head>\r\r<body>\r\t\t<form action\x3D\"/Create\" enctype\x3D\"application/x-www-form-urlencoded\" id\x3D\"URLs\" method\x3D\"post\" name\x3D\"URLs\" target\x3D\"_self\">\r\t\t\t<br />\r\t\t\t<input maxlength\x3D\"25\" name\x3D\"ShortName\" size\x3D\"25\" type\x3D\"text\" />&nbsp; <input maxlength\x3D\"255\" name\x3D\"URL\" size\x3D\"50\" type\x3D\"text\" value\x3D\"http://\" /> <input name\x3D\"Submit\" type\x3D\"submit\" value\x3D\"Shorten\" />&nbsp;</form>\r\t\t\t<br />\r<hr />\r<p>%SIGNATURE%</p>\r</body>\r</html>", Scope = Public
 	#tag EndConstant
 
 
