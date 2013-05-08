@@ -9,9 +9,6 @@ Inherits HTTPDaemon
 
 	#tag Event
 		Sub HandleRequest(ClientRequest As Request)
-		  Me.Log(ClientRequest.MethodName + " " + ClientRequest.Path + " " + "HTTP/" + Format(ClientRequest.ProtocolVersion, "#.0"), 0)
-		  Me.Log(ClientRequest.Headers.Source, -1)
-		  
 		  Dim doc As Document 'The response object
 		  Dim item As FolderItem = FindItem(ClientRequest.Path)
 		  

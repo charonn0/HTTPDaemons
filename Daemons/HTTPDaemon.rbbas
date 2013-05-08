@@ -6,6 +6,9 @@ Inherits TCPSocket
 		  Dim data As MemoryBlock = Me.ReadAll
 		  Dim clientrequest As New Request(data)
 		  
+		  Me.Log(ClientRequest.MethodName + " " + ClientRequest.Path + " " + "HTTP/" + Format(ClientRequest.ProtocolVersion, "#.0"), 0)
+		  Me.Log(ClientRequest.Headers.Source, -1)
+		  
 		  Dim tmp As Request = clientrequest
 		  If TamperRequest(tmp) Then
 		    clientrequest = tmp
