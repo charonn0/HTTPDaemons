@@ -697,6 +697,9 @@ End
 	#tag EndEvent
 	#tag Event
 		Function Authenticate(AuthString As String, HTTPPath As String, Method As String) As Boolean
+		  #pragma Unused HTTPPath
+		  #pragma Unused Method
+		  
 		  Select Case Me.AuthType
 		  Case 1 'Basic
 		    Dim bpw As String = DecodeBase64(AuthString) 'Fixme: Find a way not to use DecodeBase64: it creates external libs
