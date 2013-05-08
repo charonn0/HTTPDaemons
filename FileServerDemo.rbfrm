@@ -792,7 +792,7 @@ End
 		  Username.Enabled = Me.Value
 		  Password.Enabled = Me.Value
 		  realmtext.Enabled = Me.Value
-		  sock.AuthenticationRequired = True
+		  sock.AuthenticationRequired = Me.Value
 		  Sock.Close
 		  Sock.Listen
 		End Sub
