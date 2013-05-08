@@ -46,18 +46,16 @@ Inherits HTTPDaemon
 		    
 		  Case RequestMethod.POST
 		    doc = New Document(405, ClientRequest.MethodName)
-		    doc.Pagedata = ""
 		    
 		  Case RequestMethod.TRACE
 		    doc = New Document(405, ClientRequest.MethodName)
-		    doc.Pagedata = ""
 		    
 		  Case RequestMethod.DELETE, RequestMethod.PUT
 		    doc = New Document(405, ClientRequest.MethodName)
-		    doc.Pagedata = ""
+		    
 		  Else
 		    doc = New Document(400, ClientRequest.MethodName)
-		    doc.Pagedata = ""
+		    
 		  End Select
 		  
 		  If doc <> Nil Then
