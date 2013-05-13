@@ -2760,7 +2760,8 @@ Protected Module HTTP
 		  POST
 		  PUT
 		  DELETE
-		TRACE
+		  TRACE
+		InvalidMethod
 	#tag EndEnum
 
 

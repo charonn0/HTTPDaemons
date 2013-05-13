@@ -22,6 +22,8 @@ Protected Class Request
 		    Me.Method = RequestMethod.POST
 		  Case "PUT"
 		    Me.Method = RequestMethod.PUT
+		  Else
+		    Me.Method = RequestMethod.InvalidMethod
 		  End Select
 		  
 		  Me.Path = URLDecode(NthField(line, " ", 2).Trim)
