@@ -184,11 +184,9 @@ Inherits TCPSocket
 		    #else
 		      ResponseDocument.PageData = Replace(ResponseDocument.PageData, "%PAGEGZIPSTATUS%", "No compression.")
 		    #endif
-		    If Me.KeepListening Then
-		      ResponseDocument.Headers.SetHeader("Connection", "keep-alive")
-		    Else
-		      ResponseDocument.Headers.SetHeader("Connection", "close")
-		    End If
+		    
+		    ResponseDocument.Headers.SetHeader("Connection", "close")
+		    
 		  End If
 		  If UseCache Then PageCache.Value(ResponseDocument.Path) = ResponseDocument
 		  If ResponseDocument.Method = RequestMethod.HEAD Then
