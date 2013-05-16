@@ -2,14 +2,14 @@
 Protected Class Request
 	#tag Method, Flags = &h0
 		Sub Constructor(Data As String)
-		  Dim line, verb As String
+		  Dim line As String
 		  line = NthField(data, CRLF, 1)
 		  data = Replace(data, line + CRLF, "")
 		  Me.PostContent = NthField(data, CRLF + CRLF, 2)
 		  data = Replace(data, Me.PostContent, "")
 		  Me.Headers = New HTTPHeaders(data)
-		  verb = NthField(line, " ", 1).Trim
-		  Select Case verb
+		  Me.TrueMethodName = NthField(line, " ", 1).Trim
+		  Select Case Me.TrueMethodName
 		  Case "GET"
 		    Me.Method = RequestMethod.GET
 		  Case "HEAD"
@@ -59,7 +59,7 @@ Protected Class Request
 		    Return "TRACE"
 		    
 		  Else
-		    Return "UNKNOWN"
+		    Return Me.TrueMethodName
 		  End Select
 		  
 		  
@@ -97,6 +97,10 @@ Protected Class Request
 
 	#tag Property, Flags = &h0
 		ProtocolVersion As Single
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected TrueMethodName As String
 	#tag EndProperty
 
 
