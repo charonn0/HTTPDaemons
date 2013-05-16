@@ -41,13 +41,8 @@ Inherits HTTPDaemon
 		      doc = New Document(item, ClientRequest.Path)
 		    End If
 		    
-		  Case RequestMethod.POST
-		    doc = New Document(405, ClientRequest.MethodName)
+		  Case RequestMethod.POST, RequestMethod.TRACE, RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.InvalidMethod
 		    
-		  Case RequestMethod.TRACE
-		    doc = New Document(405, ClientRequest.MethodName)
-		    
-		  Case RequestMethod.DELETE, RequestMethod.PUT
 		    doc = New Document(405, ClientRequest.MethodName)
 		    
 		  Else
