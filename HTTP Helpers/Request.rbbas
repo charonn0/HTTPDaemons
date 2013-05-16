@@ -1,7 +1,7 @@
 #tag Class
 Protected Class Request
 	#tag Method, Flags = &h0
-		Sub Constructor(Data As String)
+		Sub Constructor(Data As String, AuthRealm As String = "Restricted Content", RequireDigestAuth As Boolean = False)
 		  Dim line As String
 		  line = NthField(data, CRLF, 1)
 		  data = Replace(data, line + CRLF, "")
@@ -34,6 +34,44 @@ Protected Class Request
 		  Me.Cookies = Me.Headers.GetCookies
 		  Me.Expiry = New Date
 		  Me.Expiry.TotalSeconds = Me.Expiry.TotalSeconds + 60
+		  Me.AuthDigest = RequireDigestAuth
+		  Me.AuthRealm = AuthRealm
+		  Dim pw As String = Me.Headers.GetHeader("Authorization")
+		  If Not Me.AuthDigest Then
+		    pw = pw.Replace("Basic ", "")
+		    pw = DecodeBase64(pw)
+		    Me.AuthPassword = NthField(pw, ":", 2)
+		    Me.AuthUsername = NthField(pw, ":", 1)
+		    
+		  Else
+		    #pragma Warning "FixMe"
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -69,6 +107,22 @@ Protected Class Request
 
 	#tag Property, Flags = &h0
 		Arguments() As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		AuthDigest As Boolean = False
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		AuthPassword As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		AuthRealm As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		AuthUsername As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

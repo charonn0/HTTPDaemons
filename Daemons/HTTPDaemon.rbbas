@@ -4,8 +4,7 @@ Inherits TCPSocket
 	#tag Event
 		Sub DataAvailable()
 		  Dim data As MemoryBlock = Me.ReadAll
-		  Dim clientrequest As New Request(data)
-		  
+		  Dim clientrequest As New Request(data, AuthenticationRealm, DigestAuthenticationOnly)
 		  Me.Log(ClientRequest.MethodName + " " + ClientRequest.Path + " " + "HTTP/" + Format(ClientRequest.ProtocolVersion, "#.0"), 0)
 		  Me.Log(ClientRequest.Headers.Source, -1)
 		  
@@ -14,22 +13,22 @@ Inherits TCPSocket
 		    clientrequest = tmp
 		  End If
 		  If Me.AuthenticationRequired Then
-		    Dim pw As String = ClientRequest.Headers.GetHeader("Authorization")
-		    pw = pw.Replace("Basic ", "")
-		    If Not Authenticate(pw, clientrequest.Path, clientrequest.MethodName) Then
+		    If Not Authenticate(clientrequest) Then
 		      Dim doc As Document = New Document(401, clientrequest.Path)
-		      Select Case Me.AuthType
-		      Case 1 'basic
-		        doc.Headers.SetHeader("WWW-Authenticate", "Basic realm=""" + Me.AuthenticationRealm + """")
-		      Case 2 'digest
+		      If Me.DigestAuthenticationOnly Or clientrequest.AuthDigest Then 
+		        'digest
 		        'Work in progress
 		        Dim rand As New Random
-		        doc.Headers.SetHeader("WWW-Authenticate", "Digest realm=""" + Me.AuthenticationRealm + """,qop=""auth"",nonce=""" + Str(Rand.InRange(50000, 100000)))
-		      End Select
+		        doc.Headers.SetHeader("WWW-Authenticate", "Digest realm=""" + clientrequest.AuthRealm + """,nonce=""" + Str(Rand.InRange(50000, 100000)) + """")
+		      Else 'basic
+		        doc.Headers.SetHeader("WWW-Authenticate", "Basic realm=""" + clientrequest.AuthRealm + """")
+		        
+		      End If
 		      Me.SendResponse(doc)
 		      Return
 		    End If
 		  End If
+		  
 		  
 		  If Not Redirects.HasKey(clientrequest.Path) Then
 		    HandleRequest(clientrequest)
@@ -207,7 +206,7 @@ Inherits TCPSocket
 
 
 	#tag Hook, Flags = &h0
-		Event Authenticate(AuthString As String, HTTPPath As String, Method As String) As Boolean
+		Event Authenticate(ClientRequest As Request) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -232,15 +231,15 @@ Inherits TCPSocket
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		AuthenticationRequired As Boolean = False
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		AuthType As Integer = 0
+		AuthenticationRequired As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private Shared CacheTimer As Timer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		DigestAuthenticationOnly As Boolean = False
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

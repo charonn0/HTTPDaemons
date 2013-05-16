@@ -696,29 +696,6 @@ End
 		End Function
 	#tag EndEvent
 	#tag Event
-		Function Authenticate(AuthString As String, HTTPPath As String, Method As String) As Boolean
-		  #pragma Unused HTTPPath
-		  #pragma Unused Method
-		  
-		  Select Case Me.AuthType
-		  Case 1 'Basic
-		    Dim bpw As String = DecodeBase64(AuthString) 'Fixme: Find a way not to use DecodeBase64: it creates external libs
-		    If Username.Text + ":" + Password.Text = bpw Then
-		      Return True
-		    End If
-		  Case 2 'Digest
-		    'Work in progress
-		    'Dim HA1, HA2 As String
-		    'HA1 = password.Text + ":" + realmtext.Text + ":" + password.Text
-		    'HA1 = MD5(HA1)
-		    
-		    
-		  End Select
-		  
-		  Return False
-		End Function
-	#tag EndEvent
-	#tag Event
 		Sub Log(Message As String, Severity As Integer)
 		  If Severity >= Val(LogLevel.Text) Then
 		    TextArea1.AppendText(Message + EndOfLine)
@@ -737,6 +714,15 @@ End
 		  Dim c As New Cookie("time", Format(Microseconds, "####"))
 		  Response.SetCookie(c)
 		  Return True
+		  
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function Authenticate(ClientRequest As Request) As Boolean
+		  Return Username.Text  = ClientRequest.AuthUsername And Password.Text = ClientRequest.AuthPassword And realmtext.Text = ClientRequest.AuthRealm
+		  
+		  
+		  
 		  
 		End Function
 	#tag EndEvent
@@ -821,12 +807,12 @@ End
 #tag Events nic1
 	#tag Event
 		Sub Open()
-		  Me.ListIndex = Sock.AuthType
+		  'Me.ListIndex = Sock.AuthType
 		End Sub
 	#tag EndEvent
 	#tag Event
 		Sub Change()
-		  Sock.AuthType = Me.ListIndex
+		  'Sock.AuthType = Me.ListIndex
 		End Sub
 	#tag EndEvent
 #tag EndEvents
