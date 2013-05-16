@@ -178,8 +178,6 @@ Begin Window ShortURLDemo
       Address         =   ""
       AuthenticationRealm=   "Restricted Area"
       AuthenticationRequired=   False
-      AuthType        =   0
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       KeepListening   =   True
@@ -187,11 +185,8 @@ Begin Window ShortURLDemo
       LockedInPosition=   False
       Port            =   0
       Scope           =   0
-      TabIndex        =   4
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   12
-      Visible         =   True
       Width           =   32
    End
    Begin ProgressBar ProgressBar1
@@ -209,9 +204,7 @@ Begin Window ShortURLDemo
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   5
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   116
       Value           =   0
       Visible         =   True

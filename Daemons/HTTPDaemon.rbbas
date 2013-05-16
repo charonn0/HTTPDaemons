@@ -12,10 +12,13 @@ Inherits TCPSocket
 		  If TamperRequest(tmp) Then
 		    clientrequest = tmp
 		  End If
+		  
+		  Dim doc As Document
+		  
 		  If Me.AuthenticationRequired Then
 		    If Not Authenticate(clientrequest) Then
-		      Dim doc As Document = New Document(401, clientrequest.Path)
-		      If Me.DigestAuthenticationOnly Or clientrequest.AuthDigest Then 
+		      doc = New Document(401, clientrequest.Path)
+		      If Me.DigestAuthenticationOnly Or clientrequest.AuthDigest Then
 		        'digest
 		        'Work in progress
 		        Dim rand As New Random
@@ -24,20 +27,21 @@ Inherits TCPSocket
 		        doc.Headers.SetHeader("WWW-Authenticate", "Basic realm=""" + clientrequest.AuthRealm + """")
 		        
 		      End If
-		      Me.SendResponse(doc)
-		      Return
+		    End If
+		  Else
+		    If Redirects.HasKey(clientrequest.Path) Then
+		      doc = Redirects.Value(clientrequest.Path)
+		      doc.FromCache = True
+		      Me.Log("Using redirect.", -2)
 		    End If
 		  End If
 		  
-		  
-		  If Not Redirects.HasKey(clientrequest.Path) Then
-		    HandleRequest(clientrequest)
-		  Else
-		    Dim redir As Document = Redirects.Value(clientrequest.Path)
-		    redir.FromCache = True
-		    Me.Log("Using redirect.", -2)
-		    SendResponse(redir)
+		  If doc = Nil Then
+		    doc = HandleRequest(clientrequest)
 		  End If
+		  
+		  SendResponse(doc)
+		  
 		  
 		Exception Err
 		  If Err IsA EndException Or Err IsA ThreadEndException Then Raise Err
@@ -159,8 +163,8 @@ Inherits TCPSocket
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub SendResponse(ResponseDocument As Document)
+	#tag Method, Flags = &h21
+		Private Sub SendResponse(ResponseDocument As Document)
 		  If Not ResponseDocument.FromCache Then
 		    Dim tmp As Document = ResponseDocument
 		    If TamperResponse(tmp) Then
@@ -210,7 +214,7 @@ Inherits TCPSocket
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event HandleRequest(ClientRequest As Request)
+		Event HandleRequest(ClientRequest As Request) As Document
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -341,17 +345,10 @@ Inherits TCPSocket
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="AuthType"
-			Visible=true
+			Name="DigestAuthenticationOnly"
 			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			EditorType="Enum"
-			#tag EnumValues
-				"0 - None"
-				"1 - Basic"
-				"2 - Digest"
-			#tag EndEnumValues
+			InitialValue="False"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"

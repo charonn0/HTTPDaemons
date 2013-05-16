@@ -2,7 +2,7 @@
 Protected Class URLShortener
 Inherits HTTPDaemon
 	#tag Event
-		Sub HandleRequest(ClientRequest As Request)
+		Function HandleRequest(ClientRequest As Request) As Document
 		  Dim doc As Document
 		  
 		  Select Case ClientRequest.Method
@@ -24,8 +24,8 @@ Inherits HTTPDaemon
 		    doc.Pagedata = ""
 		  End Select
 		  
-		  Me.SendResponse(doc)
-		End Sub
+		  Return doc
+		End Function
 	#tag EndEvent
 
 
@@ -93,18 +93,11 @@ Inherits HTTPDaemon
 			InheritedFrom="HTTPDaemon"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="AuthType"
-			Visible=true
+			Name="DigestAuthenticationOnly"
 			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			EditorType="Enum"
+			InitialValue="False"
+			Type="Boolean"
 			InheritedFrom="HTTPDaemon"
-			#tag EnumValues
-				"0 - None"
-				"1 - Basic"
-				"2 - Digest"
-			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"

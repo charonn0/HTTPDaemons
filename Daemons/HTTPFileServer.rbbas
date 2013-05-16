@@ -8,7 +8,7 @@ Inherits HTTPDaemon
 	#tag EndEvent
 
 	#tag Event
-		Sub HandleRequest(ClientRequest As Request)
+		Function HandleRequest(ClientRequest As Request) As Document
 		  Dim doc As Document 'The response object
 		  Dim item As FolderItem = FindItem(ClientRequest.Path)
 		  
@@ -50,11 +50,10 @@ Inherits HTTPDaemon
 		    
 		  End Select
 		  
-		  If doc <> Nil Then
-		    doc.Method = ClientRequest.Method
-		    Me.SendResponse(doc)
-		  End If
-		End Sub
+		  doc.Method = ClientRequest.Method
+		  Return doc
+		  
+		End Function
 	#tag EndEvent
 
 
