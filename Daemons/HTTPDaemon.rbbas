@@ -28,13 +28,13 @@ Inherits TCPSocket
 		        
 		      End If
 		    End If
-		  Else
-		    If Redirects.HasKey(clientrequest.Path) Then
-		      doc = Redirects.Value(clientrequest.Path)
-		      doc.FromCache = True
-		      Me.Log("Using redirect.", -2)
-		    End If
 		  End If
+		  If Redirects.HasKey(clientrequest.Path) And doc = Nil Then
+		    doc = Redirects.Value(clientrequest.Path)
+		    doc.FromCache = True
+		    Me.Log("Using redirect.", -2)
+		  End If
+		  
 		  
 		  If doc = Nil Then
 		    doc = HandleRequest(clientrequest)
@@ -202,8 +202,8 @@ Inherits TCPSocket
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Write(Text As String)
+	#tag Method, Flags = &h21
+		Private Sub Write(Text As String)
 		  Super.Write(Text)
 		End Sub
 	#tag EndMethod

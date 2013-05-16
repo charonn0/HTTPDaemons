@@ -719,7 +719,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Function Authenticate(ClientRequest As Request) As Boolean
-		  Return Username.Text  = ClientRequest.AuthUsername And Password.Text = ClientRequest.AuthPassword And realmtext.Text = ClientRequest.AuthRealm
+		  Return Username.Text  = ClientRequest.AuthUsername And Password.Text = ClientRequest.AuthPassword 'And realmtext.Text = ClientRequest.AuthRealm
 		  
 		  
 		  
