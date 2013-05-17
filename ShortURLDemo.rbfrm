@@ -266,7 +266,7 @@ End
 		    sock.NetworkInterface = System.GetNetworkInterface(0)
 		  End If
 		  Sock.Port = Val(port.Text)
-		  Dim redirect As New Document("/bs", "http://www.boredomsoft.org")
+		  Dim redirect As New HTTPDocument("/bs", "http://www.boredomsoft.org")
 		  Sock.AddRedirect(redirect)
 		  Sock.Listen
 		  ShowURL("http://" + Sock.NetworkInterface.IPAddress + ":" + Str(Sock.Port) + "/")
@@ -318,7 +318,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function TamperResponse(ByRef Response As Document) As Boolean
+		Function TamperResponse(ByRef Response As HTTPDocument) As Boolean
 		  If Response.StatusCode = 200 Then
 		    Response.AppendHeader("X-Judgement-Render", "Your request is granted.")
 		  ElseIf Response.StatusCode = 302 Then
@@ -326,7 +326,7 @@ End
 		  Else
 		    Response.AppendHeader("X-Judgement-Render", "Your request is denied.")
 		  End If
-		  Dim c As New Cookie("time", Format(Microseconds, "####"))
+		  Dim c As New HTTPCookie("time", Format(Microseconds, "####"))
 		  Response.SetCookie(c)
 		  Return True
 		  

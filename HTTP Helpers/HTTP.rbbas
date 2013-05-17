@@ -123,7 +123,7 @@ Protected Module HTTP
 		Function HTTPDate(Data As String) As Date
 		  
 		  'Sat, 29 Oct 1994 19:43:31 GMT
-		  
+		  Data = ReplaceAll(Data, "-", " ")
 		  Dim d As Date
 		  Dim members() As String = Split(Data, " ")
 		  If UBound(members) = 5 Then

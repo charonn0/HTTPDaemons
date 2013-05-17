@@ -4,20 +4,20 @@ Inherits TCPSocket
 	#tag Event
 		Sub DataAvailable()
 		  Dim data As MemoryBlock = Me.ReadAll
-		  Dim clientrequest As New Request(data, AuthenticationRealm, DigestAuthenticationOnly)
+		  Dim clientrequest As New HTTPRequest(data, AuthenticationRealm, DigestAuthenticationOnly)
 		  Me.Log(ClientRequest.MethodName + " " + ClientRequest.Path + " " + "HTTP/" + Format(ClientRequest.ProtocolVersion, "#.0"), 0)
 		  Me.Log(ClientRequest.Headers.Source, -1)
 		  
-		  Dim tmp As Request = clientrequest
+		  Dim tmp As HTTPRequest = clientrequest
 		  If TamperRequest(tmp) Then
 		    clientrequest = tmp
 		  End If
 		  
-		  Dim doc As Document
+		  Dim doc As HTTPDocument
 		  
 		  If Me.AuthenticationRequired Then
 		    If Not Authenticate(clientrequest) Then
-		      doc = New Document(401, clientrequest.Path)
+		      doc = New HTTPDocument(401, clientrequest.Path)
 		      If Me.DigestAuthenticationOnly Or clientrequest.AuthDigest Then
 		        'digest
 		        'Work in progress
@@ -46,7 +46,7 @@ Inherits TCPSocket
 		Exception Err
 		  If Err IsA EndException Or Err IsA ThreadEndException Then Raise Err
 		  'Return an HTTP 500 Internal Server Error page.
-		  Dim errpage As Document
+		  Dim errpage As HTTPDocument
 		  Dim stack As String
 		  #If DebugBuild Then
 		    If UBound(Err.Stack) <= -1 Then
@@ -57,7 +57,7 @@ Inherits TCPSocket
 		    stack = "<b>Exception<b>: " + Introspection.GetType(Err).FullName + "<br />Error Number: " + Str(Err.ErrorNumber) + "<br />Message: " + Err.Message _
 		    + "<br />Stack follows:<blockquote>" + stack + "</blockquote>" + EndOfLine
 		  #endif
-		  errpage = New Document(500, stack)
+		  errpage = New HTTPDocument(500, stack)
 		  
 		  Me.SendResponse(errpage)
 		  
@@ -76,7 +76,7 @@ Inherits TCPSocket
 
 
 	#tag Method, Flags = &h0
-		 Shared Sub AddRedirect(Page As Document)
+		 Shared Sub AddRedirect(Page As HTTPDocument)
 		  HTTPDaemon.Redirects.Value(Page.Path) = Page
 		End Sub
 	#tag EndMethod
@@ -85,7 +85,7 @@ Inherits TCPSocket
 		Private Shared Sub CacheCleaner(Sender As Timer)
 		  #pragma Unused Sender
 		  For Each Path As String In PageCache.Keys
-		    Dim doc As Document = PageCache.Value(Path)
+		    Dim doc As HTTPDocument = PageCache.Value(Path)
 		    Dim d As New Date
 		    If doc.Expires.TotalSeconds < d.TotalSeconds Then
 		      PageCache.Remove(Path)
@@ -136,10 +136,10 @@ Inherits TCPSocket
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function IsCached(ClientRequest As Request) As Boolean
+		Protected Shared Function IsCached(ClientRequest As HTTPRequest) As Boolean
 		  If PageCache.HasKey(ClientRequest.Path) And UseCache Then
 		    'Dim reqDate As Date = HTTPDate(ClientRequest.Headers.GetHeader("If-Modified-Since"))
-		    'Dim cache As Document = PageCache.Value(ClientRequest.Path)
+		    'Dim cache As HTTPDocument = PageCache.Value(ClientRequest.Path)
 		    'If reqDate <> Nil And reqDate.TotalSeconds >= Cache.Modified.TotalSeconds Then
 		    Return True
 		    'End If
@@ -170,14 +170,14 @@ Inherits TCPSocket
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub SendResponse(ResponseDocument As Document)
+		Private Sub SendResponse(ResponseDocument As HTTPDocument)
+		  Dim tmp As HTTPDocument = ResponseDocument
+		  If TamperResponse(tmp) Then
+		    Me.Log("Outbound tamper.", -2)
+		    ResponseDocument  = tmp
+		  End If
+		  If UseCache Then PageCache.Value(ResponseDocument.Path) = ResponseDocument
 		  If Not ResponseDocument.FromCache Then
-		    Dim tmp As Document = ResponseDocument
-		    If TamperResponse(tmp) Then
-		      Me.Log("Outbound tamper.", -2)
-		      ResponseDocument  = tmp
-		    End If
-		    
 		    #If GZIPAvailable Then
 		      Me.Log("Running gzip", -2)
 		      ResponseDocument.Headers.SetHeader("Content-Encoding", "gzip")
@@ -197,7 +197,6 @@ Inherits TCPSocket
 		    ResponseDocument.Headers.SetHeader("Connection", "close")
 		    
 		  End If
-		  If UseCache Then PageCache.Value(ResponseDocument.Path) = ResponseDocument
 		  If ResponseDocument.Method = RequestMethod.HEAD Then
 		    ResponseDocument.Headers.SetHeader("Content-Length", Str(ResponseDocument.Pagedata.LenB))
 		    ResponseDocument.Pagedata = ""
@@ -221,11 +220,11 @@ Inherits TCPSocket
 
 
 	#tag Hook, Flags = &h0
-		Event Authenticate(ClientRequest As Request) As Boolean
+		Event Authenticate(ClientRequest As HTTPRequest) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event HandleRequest(ClientRequest As Request) As Document
+		Event HandleRequest(ClientRequest As HTTPRequest) As HTTPDocument
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -233,11 +232,11 @@ Inherits TCPSocket
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event TamperRequest(ByRef Request As Request) As Boolean
+		Event TamperRequest(ByRef HTTPRequest As HTTPRequest) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event TamperResponse(ByRef Response As Document) As Boolean
+		Event TamperResponse(ByRef Response As HTTPDocument) As Boolean
 	#tag EndHook
 
 

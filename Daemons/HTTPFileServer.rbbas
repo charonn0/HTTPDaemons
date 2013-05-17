@@ -8,45 +8,45 @@ Inherits HTTPDaemon
 	#tag EndEvent
 
 	#tag Event
-		Function HandleRequest(ClientRequest As Request) As Document
-		  Dim doc As Document 'The response object
+		Function HandleRequest(ClientRequest As HTTPRequest) As HTTPDocument
+		  Dim doc As HTTPDocument 'The response object
 		  Dim item As FolderItem = FindItem(ClientRequest.Path)
 		  
 		  Select Case ClientRequest.Method
 		  Case RequestMethod.GET, RequestMethod.HEAD
 		    If IsCached(ClientRequest) Then
 		      'Cache hit
-		      Dim cache As Document = PageCache.Value(ClientRequest.Path)
-		      doc = New Document(cache, ClientRequest.Path)
+		      Dim cache As HTTPDocument = PageCache.Value(ClientRequest.Path)
+		      doc = New HTTPDocument(cache, ClientRequest.Path)
 		      doc.FromCache = True
 		      Me.Log("Page from cache", -2)
 		      
 		    ElseIf item = Nil Then
 		      '404 Not found
 		      Me.Log("Page not found", -2)
-		      doc = New Document(404, ClientRequest.Path)
+		      doc = New HTTPDocument(404, ClientRequest.Path)
 		      
 		    ElseIf item.Directory And Not Me.DirectoryBrowsing Then
 		      '403 Forbidden!
 		      Me.Log("Page is directory and DirectoryBrowsing=False", -2)
-		      doc = New Document(403, ClientRequest.Path)
+		      doc = New HTTPDocument(403, ClientRequest.Path)
 		      
 		    ElseIf ClientRequest.Path = "/" And Not item.Directory Then
 		      '302 redirect from "/" to "/" + item.name
-		      doc = New Document(302, ClientRequest.Path)
+		      doc = New HTTPDocument(302, ClientRequest.Path)
 		      doc.Headers.SetHeader("Location", "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name)
 		    Else
 		      '200 OK
 		      Me.Log("Found page", -2)
-		      doc = New Document(item, ClientRequest.Path)
+		      doc = New HTTPDocument(item, ClientRequest.Path)
 		    End If
 		    
 		  Case RequestMethod.POST, RequestMethod.TRACE, RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.InvalidMethod
 		    
-		    doc = New Document(405, ClientRequest.MethodName)
+		    doc = New HTTPDocument(405, ClientRequest.MethodName)
 		    
 		  Else
-		    doc = New Document(400, ClientRequest.MethodName)
+		    doc = New HTTPDocument(400, ClientRequest.MethodName)
 		    
 		  End Select
 		  
@@ -110,18 +110,11 @@ Inherits HTTPDaemon
 			InheritedFrom="HTTPDaemon"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="AuthType"
-			Visible=true
+			Name="DigestAuthenticationOnly"
 			Group="Behavior"
-			InitialValue="0"
-			Type="Integer"
-			EditorType="Enum"
+			InitialValue="False"
+			Type="Boolean"
 			InheritedFrom="HTTPDaemon"
-			#tag EnumValues
-				"0 - None"
-				"1 - Basic"
-				"2 - Digest"
-			#tag EndEnumValues
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="DirectoryBrowsing"

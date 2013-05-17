@@ -15,7 +15,7 @@ Inherits InternetHeaders
 		    v = Right(line, line.Len - (n.Len + 2)).Trim
 		    If n = "Cookie" or n = "Set-Cookie" Then
 		      Dim c() As String = Split(v, ";")
-		      Dim ck As New Cookie(Nil, Nil)
+		      Dim ck As New HTTPCookie(Nil, Nil)
 		      For Each cook As String In c
 		        Dim l, r As String
 		        l = NthField(cook, "=", 1).Trim
@@ -32,7 +32,7 @@ Inherits InternetHeaders
 		          ck.Port = Val(r)
 		        Else
 		          'r = NthField(cook, "=", 2).Trim
-		          Dim kc As New Cookie(l, r)
+		          Dim kc As New HTTPCookie(l, r)
 		          kc.Domain = ck.Domain
 		          kc.Expires = ck.Expires
 		          kc.Path = ck.Path
@@ -61,9 +61,9 @@ Inherits InternetHeaders
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetCookies() As Cookie()
+		Function GetCookies() As HTTPCookie()
 		  'Returns a string array of all HTTP cookies
-		  'Dim cookies() As Cookie
+		  'DimHTTPCookies() As HTTPCookie
 		  
 		  'Dim head As String = Me.GetHeader("Cookie")
 		  'Dim c() As String = Split(head, ";")
@@ -71,7 +71,7 @@ Inherits InternetHeaders
 		  'Dim l, r As String
 		  'l = NthField(cook, "=", 1).Trim
 		  'r = NthField(cook, "=", 2).Trim
-		  'cookies.Append(New Cookie(l, r))
+		  'cookies.Append(New HTTPCookie(l, r))
 		  'Next
 		  '
 		  'head = Me.GetHeader("Set-Cookie")
@@ -80,7 +80,7 @@ Inherits InternetHeaders
 		  'Dim l, r As String
 		  'l = NthField(cook, "=", 1).Trim
 		  'r = NthField(cook, "=", 2).Trim
-		  'cookies.Append(New Cookie(l, r))
+		  'cookies.Append(New HTTPCookie(l, r))
 		  'Next
 		  
 		  Return cookies
@@ -120,7 +120,7 @@ Inherits InternetHeaders
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SetCookie(c As Cookie)
+		Sub SetCookie(c As HTTPCookie)
 		  'Dim data As String
 		  'If Me.HasHeader("Set-Cookie") Then
 		  'data = Me.Value("Set-Cookie") + ";" + c.Name + "=" + c.Right
@@ -132,9 +132,21 @@ Inherits InternetHeaders
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Source() As String
+		  Dim data As String = Super.Source
+		  
+		  For Each c As HTTPCookie In Me.Cookies
+		    data = data + CRLF + "Set-Cookie: " + c.ToString + CRLF
+		  Next
+		  
+		  Return data
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
-		Cookies() As Cookie
+		Cookies() As HTTPCookie
 	#tag EndProperty
 
 

@@ -1,6 +1,44 @@
 #tag Class
-Protected Class Cookie
+Protected Class HTTPCookie
 Inherits Pair
+	#tag Method, Flags = &h1000
+		Sub Constructor(Raw As String)
+		  Dim l, r, m, data As String
+		  
+		  If InStr(Raw, ";") > 0 Then
+		    data = NthField(Raw, ";", 1)
+		    m = NthField(Raw, data + ";", 2).Trim
+		  End If
+		  l = NthField(data, "=", 1)
+		  r = NthField(data, "=", 2)
+		  Me.Constructor(l, r)
+		  If m <> "" Then
+		    Dim items() As String = Split(m, ";")
+		    For Each item As String In items
+		      Dim k, v As String
+		      k = NthField(item, "=", 1)
+		      v = NthField(item, "=", 2)
+		      Select Case k.Trim
+		      Case "Domain"
+		        Me.Domain = v
+		      Case "Path"
+		        Me.Path = v
+		      Case "Expires"
+		        Me.Expiry = HTTPDate(v)
+		      Case "Port"
+		        Me.Port = Val(v)
+		      Case "Secure", "httpOnly"
+		        Me.Secure = True
+		      Else
+		        ExtraParams.Value(k) = v
+		        
+		      End Select
+		    Next
+		  End If
+		  Break
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h1000
 		Sub Constructor(left As Variant, right As Variant)
 		  // Calling the overridden superclass constructor.
@@ -39,7 +77,7 @@ Inherits Pair
 		  Dim data As String = Me.Name + "=" + Me.Value
 		  
 		  Dim now As New Date
-		  If Me.Expires.TotalSeconds > now.TotalSeconds + 61 Then
+		  If Me.Expires.TotalSeconds > now.TotalSeconds Then
 		    data = data + "; expires=" + HTTPDate(Me.Expires)
 		  End If
 		  
@@ -72,6 +110,25 @@ Inherits Pair
 
 	#tag Property, Flags = &h1
 		Protected Expiry As Date
+	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mExtraParams = Nil Then mExtraParams = New Dictionary
+			  return mExtraParams
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mExtraParams = value
+			End Set
+		#tag EndSetter
+		ExtraParams As Dictionary
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mExtraParams As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

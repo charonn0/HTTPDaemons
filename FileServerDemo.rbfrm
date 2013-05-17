@@ -241,7 +241,6 @@ Begin Window FileServerDemo
       Address         =   ""
       AuthenticationRealm=   "Restricted Area"
       AuthenticationRequired=   False
-      AuthType        =   0
       DirectoryBrowsing=   True
       Height          =   32
       Index           =   -2147483648
@@ -618,7 +617,7 @@ End
 		  Sock.Port = Val(port.Text)
 		  Sock.Document = SharedFile
 		  'Sock.Authenticate = CheckBox2.Value
-		  Dim redirect As New Document("/bs", "http://www.boredomsoft.org")
+		  Dim redirect As New HTTPDocument("/bs", "http://www.boredomsoft.org")
 		  Sock.AddRedirect(redirect)
 		  Sock.Listen
 		  ShowURL("http://" + Sock.NetworkInterface.IPAddress + ":" + Str(Sock.Port) + "/")
@@ -703,7 +702,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function TamperResponse(ByRef Response As Document) As Boolean
+		Function TamperResponse(ByRef Response As HTTPDocument) As Boolean
 		  If Response.StatusCode = 200 Then
 		    Response.AppendHeader("X-Judgement-Render", "Your request is granted.")
 		  ElseIf Response.StatusCode = 302 Then
@@ -711,14 +710,14 @@ End
 		  Else
 		    Response.AppendHeader("X-Judgement-Render", "Your request is denied.")
 		  End If
-		  Dim c As New Cookie("time", Format(Microseconds, "####"))
+		  Dim c As New HTTPCookie("time", Format(Microseconds, "####"))
 		  Response.SetCookie(c)
 		  Return True
 		  
 		End Function
 	#tag EndEvent
 	#tag Event
-		Function Authenticate(ClientRequest As Request) As Boolean
+		Function Authenticate(ClientRequest As HTTPRequest) As Boolean
 		  Return Username.Text  = ClientRequest.AuthUsername And Password.Text = ClientRequest.AuthPassword 'And realmtext.Text = ClientRequest.AuthRealm
 		  
 		  

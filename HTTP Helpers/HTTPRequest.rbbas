@@ -1,5 +1,5 @@
 #tag Class
-Protected Class Request
+Protected Class HTTPRequest
 	#tag Method, Flags = &h0
 		Sub Constructor(Data As String, AuthRealm As String = "Restricted Content", RequireDigestAuth As Boolean = False)
 		  Dim line As String
@@ -103,7 +103,7 @@ Protected Class Request
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Cookies() As Cookie
+		Cookies() As HTTPCookie
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
