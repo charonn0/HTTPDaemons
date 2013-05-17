@@ -84,7 +84,13 @@ Inherits TCPSocket
 	#tag Method, Flags = &h21
 		Private Shared Sub CacheCleaner(Sender As Timer)
 		  #pragma Unused Sender
-		  PageCache = New Dictionary
+		  For Each Path As String In PageCache.Keys
+		    Dim doc As Document = PageCache.Value(Path)
+		    Dim d As New Date
+		    If doc.Expires.TotalSeconds < d.TotalSeconds Then
+		      PageCache.Remove(Path)
+		    End If
+		  Next
 		End Sub
 	#tag EndMethod
 
@@ -195,9 +201,14 @@ Inherits TCPSocket
 		  If ResponseDocument.Method = RequestMethod.HEAD Then
 		    ResponseDocument.Headers.SetHeader("Content-Length", Str(ResponseDocument.Pagedata.LenB))
 		    ResponseDocument.Pagedata = ""
+		    If PageCache.HasKey(ResponseDocument.Path) Then PageCache.Remove(ResponseDocument.Path)
 		  End If
 		  Me.Log(HTTPResponse(ResponseDocument.StatusCode), 0)
 		  Me.Log(ResponseDocument.Headers.Source, -1)
+		  If ResponseDocument.StatusCode = 405 Then 'Method not allowed
+		    ResponseDocument.Headers.SetHeader("Allow", "GET, HEAD, POST")
+		  End If
+		  
 		  Me.Write(ResponseDocument.ToString)
 		End Sub
 	#tag EndMethod

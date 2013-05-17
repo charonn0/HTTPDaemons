@@ -14,6 +14,7 @@ Protected Class Document
 		  Me.Modified = CachedPage.Modified
 		  Me.Path = Path
 		  mHeaders = CachedPage.Headers
+		  Me.Expires = CachedPage.Expires
 		End Sub
 	#tag EndMethod
 
@@ -31,6 +32,8 @@ Protected Class Document
 		  Me.StatusCode = 200
 		  Me.Modified = Page.ModificationDate
 		  Me.Path = Path
+		  Me.Expires = New Date
+		  Me.Expires.TotalSeconds = Me.Expires.TotalSeconds + 60
 		End Sub
 	#tag EndMethod
 
@@ -42,6 +45,8 @@ Protected Class Document
 		  Me.Pagedata = ErrorPage(StatusCode, Param)
 		  Me.StatusCode = ErrorCode
 		  Me.Modified = New Date
+		  
+		  Me.Expires = New Date(1999, 12, 31, 23, 59, 59)
 		End Sub
 	#tag EndMethod
 
@@ -52,6 +57,7 @@ Protected Class Document
 		  Me.Modified = New Date
 		  Me.Path = Path
 		  Headers.AppendHeader("Location", RedirectURL)
+		  Me.Expires = New Date(1999, 12, 31, 23, 59, 59)
 		End Sub
 	#tag EndMethod
 
@@ -220,6 +226,10 @@ Protected Class Document
 		Event TamperPageData(ByRef Data As String) As Boolean
 	#tag EndHook
 
+
+	#tag Property, Flags = &h0
+		Expires As Date
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		FromCache As Boolean
