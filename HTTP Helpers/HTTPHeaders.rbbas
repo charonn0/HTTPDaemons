@@ -78,13 +78,7 @@ Inherits InternetHeaders
 
 	#tag Method, Flags = &h0
 		Sub SetCookie(c As Cookie)
-		  Dim data As String
-		  If Me.HasHeader("Set-Cookie") Then
-		    data = Me.Value("Set-Cookie") + ";" + c.Name + "=" + c.Right
-		  Else
-		    data = c.Name + "=" + c.Right
-		  End If
-		  Me.SetHeader("Set-Cookie", data)
+		  Me.SetHeader("Set-Cookie", c.ToString)
 		End Sub
 	#tag EndMethod
 
