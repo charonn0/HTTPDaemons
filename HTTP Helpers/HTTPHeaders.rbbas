@@ -10,7 +10,40 @@ Inherits InternetHeaders
 		  For i As Integer = 0 To UBound(lines)
 		    Dim line As String = lines(i)
 		    If Instr(line, ": ") <= 1  Or line.Trim = "" Then Continue
-		    Me.AppendHeader(NthField(line, ": ", 1), NthField(line, ": ", 2))
+		    Dim n, v As String
+		    n = NthField(line, ": ", 1)
+		    v = Right(line, line.Len - (n.Len + 2)).Trim
+		    If n = "Cookie" or n = "Set-Cookie" Then
+		      Dim c() As String = Split(v, ";")
+		      Dim ck As New Cookie(Nil, Nil)
+		      For Each cook As String In c
+		        Dim l, r As String
+		        l = NthField(cook, "=", 1).Trim
+		        r = Right(cook, l.Len + 1)
+		        
+		        Select Case l
+		        Case "Domain"
+		          ck.Domain = r
+		        Case "Path"
+		          ck.Path = r
+		        Case "Secure"
+		          ck.Secure = True
+		        Case "Port"
+		          ck.Port = Val(r)
+		        Else
+		          'r = NthField(cook, "=", 2).Trim
+		          Dim kc As New Cookie(l, r)
+		          kc.Domain = ck.Domain
+		          kc.Expires = ck.Expires
+		          kc.Path = ck.Path
+		          kc.Secure = ck.Secure
+		          ck = kc
+		        End Select
+		      Next
+		      cookies.Append(ck)
+		    Else
+		      Me.AppendHeader(n, v)
+		    End If
 		  Next
 		End Sub
 	#tag EndMethod
@@ -30,15 +63,25 @@ Inherits InternetHeaders
 	#tag Method, Flags = &h0
 		Function GetCookies() As Cookie()
 		  'Returns a string array of all HTTP cookies
-		  Dim cookies() As Cookie
-		  Dim head As String = Me.GetHeader("Cookie")
-		  Dim c() As String = Split(head, ";")
-		  For Each cook As String In c
-		    Dim l, r As String
-		    l = NthField(cook, "=", 1).Trim
-		    r = NthField(cook, "=", 2).Trim
-		    cookies.Append(New Cookie(l, r))
-		  Next
+		  'Dim cookies() As Cookie
+		  
+		  'Dim head As String = Me.GetHeader("Cookie")
+		  'Dim c() As String = Split(head, ";")
+		  'For Each cook As String In c
+		  'Dim l, r As String
+		  'l = NthField(cook, "=", 1).Trim
+		  'r = NthField(cook, "=", 2).Trim
+		  'cookies.Append(New Cookie(l, r))
+		  'Next
+		  '
+		  'head = Me.GetHeader("Set-Cookie")
+		  'c() = Split(head, ";")
+		  'For Each cook As String In c
+		  'Dim l, r As String
+		  'l = NthField(cook, "=", 1).Trim
+		  'r = NthField(cook, "=", 2).Trim
+		  'cookies.Append(New Cookie(l, r))
+		  'Next
 		  
 		  Return cookies
 		End Function
@@ -78,9 +121,21 @@ Inherits InternetHeaders
 
 	#tag Method, Flags = &h0
 		Sub SetCookie(c As Cookie)
-		  Me.SetHeader("Set-Cookie", c.ToString)
+		  'Dim data As String
+		  'If Me.HasHeader("Set-Cookie") Then
+		  'data = Me.Value("Set-Cookie") + ";" + c.Name + "=" + c.Right
+		  'Else
+		  'data = c.Name + "=" + c.Right
+		  'End If
+		  'Me.SetHeader("Set-Cookie", data)
+		  Cookies.Append(c)
 		End Sub
 	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		Cookies() As Cookie
+	#tag EndProperty
 
 
 	#tag ViewBehavior
