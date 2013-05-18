@@ -14,35 +14,8 @@ Inherits InternetHeaders
 		    n = NthField(line, ": ", 1)
 		    v = Right(line, line.Len - (n.Len + 2)).Trim
 		    If n = "Cookie" or n = "Set-Cookie" Then
-		      Dim c() As String = Split(v, ";")
-		      Dim ck As New HTTPCookie(Nil, Nil)
-		      For Each cook As String In c
-		        Dim l, r As String
-		        l = NthField(cook, "=", 1).Trim
-		        r = Right(cook, cook.Len - (NthField(cook, "=", 1).Len) - 1)
-		        
-		        Select Case l
-		        Case "Domain"
-		          ck.Domain = r
-		        Case "Path"
-		          ck.Path = r
-		        Case "Secure"
-		          ck.Secure = True
-		        Case "Port"
-		          ck.Port = Val(r)
-		        Case "httponly"
-		          ck.Secure = False
-		        Else
-		          'r = NthField(cook, "=", 2).Trim
-		          Dim kc As New HTTPCookie(l, r)
-		          kc.Domain = ck.Domain
-		          kc.Expires = ck.Expires
-		          kc.Path = ck.Path
-		          kc.Secure = ck.Secure
-		          ck = kc
-		        End Select
-		      Next
-		      cookies.Append(ck)
+		      Cookies.Append(New HTTPCookie(v))
+		      
 		    Else
 		      Me.AppendHeader(n, v)
 		    End If

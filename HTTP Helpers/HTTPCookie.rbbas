@@ -10,7 +10,8 @@ Inherits Pair
 		    m = NthField(Raw, data + ";", 2).Trim
 		  End If
 		  l = NthField(data, "=", 1)
-		  r = NthField(data, "=", 2)
+		  r = Right(data, data.Len - l.Len - 1)
+		  'NthField(data, "=", 2)
 		  Me.Constructor(l, r)
 		  If m <> "" Then
 		    Dim items() As String = Split(m, ";")
@@ -35,7 +36,6 @@ Inherits Pair
 		      End Select
 		    Next
 		  End If
-		  Break
 		End Sub
 	#tag EndMethod
 

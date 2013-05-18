@@ -553,8 +553,8 @@ Begin Window Generator
          AutoHideScrollbars=   True
          Bold            =   ""
          Border          =   True
-         ColumnCount     =   3
-         ColumnsResizable=   ""
+         ColumnCount     =   2
+         ColumnsResizable=   True
          ColumnWidths    =   ""
          DataField       =   ""
          DataSource      =   ""
@@ -571,7 +571,7 @@ Begin Window Generator
          Hierarchical    =   ""
          Index           =   -2147483648
          InitialParent   =   "GroupBox1"
-         InitialValue    =   "Header Name	Header Value	Comment"
+         InitialValue    =   "Header Name	Header Value"
          Italic          =   ""
          Left            =   20
          LockBottom      =   ""
@@ -851,7 +851,7 @@ Begin Window Generator
          HasMenu         =   0
          Height          =   22
          HelpTag         =   ""
-         Icon            =   2057209855
+         Icon            =   1167294463
          IconAlign       =   1
          IconDX          =   0
          IconDY          =   0
@@ -899,7 +899,7 @@ Begin Window Generator
          Index           =   -2147483648
          InitialParent   =   "GroupBox1"
          Italic          =   ""
-         Left            =   73
+         Left            =   92
          LimitText       =   0
          LockBottom      =   ""
          LockedInPosition=   False
@@ -922,7 +922,7 @@ Begin Window Generator
          Underline       =   ""
          UseFocusRing    =   True
          Visible         =   True
-         Width           =   237
+         Width           =   218
       End
       Begin CheckBox gziprequest
          AutoDeactivate  =   True
@@ -975,7 +975,7 @@ Begin Window Generator
       Bold            =   ""
       Border          =   True
       ColumnCount     =   3
-      ColumnsResizable=   ""
+      ColumnsResizable=   True
       ColumnWidths    =   ""
       DataField       =   ""
       DataSource      =   ""
@@ -1089,8 +1089,6 @@ End
 		  
 		  If gziprequest.Value Then
 		    Me.Request.Headers.SetHeader("Accept-Encoding", "gzip")
-		  Else
-		    Me.Request.Headers.AppendHeader("Accept-Encoding", "gzip")
 		  End If
 		End Sub
 	#tag EndMethod
@@ -1322,6 +1320,13 @@ End
 		      Headers.AddRow("Cookie", c.Name + "=" + c.Value, "HTTP Cookie")
 		    End If
 		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events gziprequest
+	#tag Event
+		Sub Open()
+		  Me.Enabled = GZIPAvailable
 		End Sub
 	#tag EndEvent
 #tag EndEvents

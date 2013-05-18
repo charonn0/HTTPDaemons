@@ -2,10 +2,13 @@
 Protected Class HTTPResponse
 	#tag Method, Flags = &h0
 		Sub Constructor(Data As String, AuthRealm As String = "Restricted Content", RequireDigestAuth As Boolean = False)
+		  Dim body As Integer = InStr(data, CRLF + CRLF)
+		  Me.MessageBody = Right(data, data.Len - body)
+		  'NthField(data, CRLF + CRLF, 2)
+		  data = Replace(data, Me.MessageBody, "").Trim
 		  Dim line As String
 		  line = NthField(data, CRLF, 1)
 		  data = Replace(data, line + CRLF, "")
-		  Me.MessageBody = NthField(data, CRLF + CRLF, 2)
 		  data = Replace(data, Me.MessageBody, "")
 		  Me.Headers = New HTTPHeaders(data)
 		  Me.Method = NthField(line, " ", 1).Trim
@@ -92,6 +95,11 @@ Protected Class HTTPResponse
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AuthSecure"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="GZipped"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
