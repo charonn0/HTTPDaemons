@@ -271,11 +271,6 @@ Protected Class HTTPRequest
 			InitialValue="0"
 			InheritedFrom="Object"
 		#tag EndViewProperty
-		#tag ViewProperty
-			Name="TrueMethodName"
-			Group="Behavior"
-			Type="String"
-		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class
 #tag EndClass

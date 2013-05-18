@@ -44,8 +44,8 @@ Protected Class HTTPResponse
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub Constructor(Method As String)
+	#tag Method, Flags = &h1
+		Protected Sub Constructor(Method As String)
 		  Select Case Method
 		  Case "GET"
 		    Me.Method = HTTP.RequestMethod.GET
@@ -447,7 +447,22 @@ Protected Class HTTPResponse
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="AuthRealm"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="AuthSecure"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="FromCache"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="GZipped"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty
@@ -466,16 +481,15 @@ Protected Class HTTPResponse
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="MessageBody"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			InheritedFrom="Object"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Pagedata"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Path"
@@ -484,9 +498,19 @@ Protected Class HTTPResponse
 			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="ProtocolVersion"
+			Group="Behavior"
+			Type="Single"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="StatusCode"
 			Group="Behavior"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StatusMessage"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
