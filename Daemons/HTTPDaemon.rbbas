@@ -63,10 +63,12 @@ Inherits TCPSocket
 		      doc.Headers.SetHeader("Accept-Ranges", "bytes")
 		    Case RequestMethod.GET, RequestMethod.HEAD
 		      doc = New HTTPResponse(404, clientrequest.Path)
-		    Case RequestMethod.InvalidMethod
-		      doc = New HTTPResponse(400, "")
 		    Else
-		      doc = New HTTPResponse(405, clientrequest.MethodName)
+		      If clientrequest.Method = RequestMethod.InvalidMethod And clientrequest.MethodName <> "" Then
+		        doc = New HTTPResponse(405, clientrequest.MethodName) 'Not allowed
+		      Else
+		        doc = New HTTPResponse(400, "") 'bad request
+		      End If
 		    End Select
 		  End If
 		  
