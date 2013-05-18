@@ -7,20 +7,6 @@ Protected Class URI
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		 Shared Function Decode(URL As String) As String
-		  //Quick and dirty stand-in for DecodeURLComponent
-		  Dim ret As String = URL
-		  
-		  For i As Integer = 0 To 127
-		    Dim char As String = "%" + Right("00" + Hex(i), 2)
-		    ret = ReplaceAll(ret, char, Chr(i))
-		  Next
-		  
-		  Return ret
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		 Shared Function DefaultPort(ProtocolName As String) As Integer
 		  Select Case ProtocolName
 		  Case "http"
@@ -65,24 +51,6 @@ Protected Class URI
 		  Else //more later
 		    Return 0
 		  End Select
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function Encode(URL As String) As String
-		  //Quick and dirty stand-in for EncodeURLComponent
-		  Dim ret As String = URL
-		  
-		  For i As Integer = 0 To 127
-		    Dim char As String = "%" + Right("00" + Hex(i), 2)
-		    ret = ReplaceAll(ret, Chr(i), char)
-		    
-		    If i = 34 Then i = 38
-		    If i = 39 Then i = 126
-		  Next
-		  
-		  
-		  Return ret
 		End Function
 	#tag EndMethod
 
