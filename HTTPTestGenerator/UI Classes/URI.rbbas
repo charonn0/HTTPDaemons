@@ -97,6 +97,8 @@ Protected Class URI
 		  //  0: CompareTo = Me
 		  //  1: CompareTo > Me -Or- not equal (if CaseSensitive = False)
 		  
+		  If CompareTo = Nil Then Return -1
+		  
 		  Dim l, r As String
 		  l = CompareTo
 		  r = Me
