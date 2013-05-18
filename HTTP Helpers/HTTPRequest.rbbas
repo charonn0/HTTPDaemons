@@ -94,7 +94,11 @@ Protected Class HTTPRequest
 
 	#tag Method, Flags = &h0
 		Function ToString() As String
-		  Dim data As String = MethodName + " " + Path + " " + "HTTP/" + Format(ProtocolVersion, "#.0") + CRLF
+		  Dim args As String
+		  If Me.Arguments.Ubound > -1 Then
+		    args = "?" + Join(Me.Arguments, "&")
+		  End If
+		  Dim data As String = MethodName + " " + Path + args + " " + "HTTP/" + Format(ProtocolVersion, "#.0") + CRLF
 		  If Headers.Count > 0 Then
 		    data = data + Headers.Source + CRLF
 		  End If
