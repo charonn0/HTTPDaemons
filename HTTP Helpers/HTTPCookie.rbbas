@@ -8,6 +8,8 @@ Inherits Pair
 		  If InStr(Raw, ";") > 0 Then
 		    data = NthField(Raw, ";", 1)
 		    m = NthField(Raw, data + ";", 2).Trim
+		  Else
+		    data = raw
 		  End If
 		  l = NthField(data, "=", 1)
 		  r = Right(data, data.Len - l.Len - 1)
