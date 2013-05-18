@@ -10,6 +10,11 @@ Protected Class HTTPRequest
 		Sub Constructor(Data As String, AuthRealm As String, RequireDigestAuth As Boolean)
 		  Dim line As String
 		  line = NthField(data, CRLF, 1)
+		  
+		  If CountFields(line.Trim, " ") <> 3 Then
+		    Raise New UnsupportedFormatException
+		  End If
+		  
 		  data = Replace(data, line + CRLF, "")
 		  Me.MessageBody = NthField(data, CRLF + CRLF, 2)
 		  data = Replace(data, Me.MessageBody, "")
@@ -35,8 +40,6 @@ Protected Class HTTPRequest
 		    
 		  Else
 		    #pragma Warning "FixMe"
-		    
-		    
 		    
 		  End If
 		End Sub

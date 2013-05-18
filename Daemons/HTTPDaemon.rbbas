@@ -4,7 +4,14 @@ Inherits TCPSocket
 	#tag Event
 		Sub DataAvailable()
 		  Dim data As MemoryBlock = Me.ReadAll
-		  Dim clientrequest As New HTTPRequest(data, AuthenticationRealm, DigestAuthenticationOnly)
+		  Dim clientrequest As HTTPRequest
+		  Try
+		    clientrequest = New HTTPRequest(data, AuthenticationRealm, DigestAuthenticationOnly)
+		  Catch err As UnsupportedFormatException
+		    SendResponse(New HTTPResponse(400, "")) 'bad request
+		    Return
+		  End Try
+		  
 		  Me.Log(ClientRequest.MethodName + " " + ClientRequest.Path + " " + "HTTP/" + Format(ClientRequest.ProtocolVersion, "#.0"), 0)
 		  Me.Log(ClientRequest.Headers.Source, -1)
 		  
@@ -56,6 +63,8 @@ Inherits TCPSocket
 		      doc.Headers.SetHeader("Accept-Ranges", "bytes")
 		    Case RequestMethod.GET, RequestMethod.HEAD
 		      doc = New HTTPResponse(404, clientrequest.Path)
+		    Case RequestMethod.InvalidMethod
+		      doc = New HTTPResponse(400, "")
 		    Else
 		      doc = New HTTPResponse(405, clientrequest.MethodName)
 		    End Select
