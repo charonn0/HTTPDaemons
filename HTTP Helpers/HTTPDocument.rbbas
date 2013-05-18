@@ -1,12 +1,6 @@
 #tag Class
 Protected Class HTTPDocument
 	#tag Method, Flags = &h0
-		Sub AppendHeader(Name As String, Value As String)
-		  Me.Headers.AppendHeader(Name, Value)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub Constructor(page As FolderItem, Path As String)
 		  'Use this constructor to create a Document from a FolderItem (file or directory)
 		  If page.Directory Then
@@ -207,6 +201,15 @@ Protected Class HTTPDocument
 	#tag Method, Flags = &h0
 		Sub SetCookie(NewCookie As HTTPCookie)
 		  Me.Headers.SetCookie(NewCookie)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SetHeader(Name As String, Value As String)
+		  If Headers.HasHeader(Name) Then
+		    Headers.RemoveHeader(Name)
+		  End If
+		  Me.Headers.AppendHeader(Name, Value)
 		End Sub
 	#tag EndMethod
 

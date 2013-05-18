@@ -128,7 +128,21 @@ Inherits InternetHeaders
 		  'data = c.Name + "=" + c.Right
 		  'End If
 		  'Me.SetHeader("Set-Cookie", data)
+		  For i As Integer = UBound(Me.Cookies) DownTo 0
+		    If Me.Cookies(i).Name = c.Name Then
+		      Me.Cookies.Remove(i)
+		    End If
+		  Next
 		  Cookies.Append(c)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub SetHeader(Name As String, Value As String)
+		  If Me.HasHeader(Name) Then
+		    Me.RemoveHeader(Name)
+		  End If
+		  Me.AppendHeader(Name, Value)
 		End Sub
 	#tag EndMethod
 
@@ -137,7 +151,7 @@ Inherits InternetHeaders
 		  Dim data As String = Super.Source
 		  
 		  For Each c As HTTPCookie In Me.Cookies
-		    data = data + CRLF + "Set-Cookie: " + c.ToString + CRLF
+		    data = data + CRLF + "Set-Cookie: " + c.ToString
 		  Next
 		  
 		  Return data

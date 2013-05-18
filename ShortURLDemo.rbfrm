@@ -178,6 +178,7 @@ Begin Window ShortURLDemo
       Address         =   ""
       AuthenticationRealm=   "Restricted Area"
       AuthenticationRequired=   False
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       KeepListening   =   True
@@ -185,8 +186,11 @@ Begin Window ShortURLDemo
       LockedInPosition=   False
       Port            =   0
       Scope           =   0
+      TabIndex        =   4
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   12
+      Visible         =   True
       Width           =   32
    End
    Begin ProgressBar ProgressBar1
@@ -204,7 +208,9 @@ Begin Window ShortURLDemo
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   5
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   116
       Value           =   0
       Visible         =   True
@@ -320,11 +326,11 @@ End
 	#tag Event
 		Function TamperResponse(ByRef Response As HTTPDocument) As Boolean
 		  If Response.StatusCode = 200 Then
-		    Response.AppendHeader("X-Judgement-Render", "Your request is granted.")
+		    Response.SetHeader("X-Judgement-Render", "Your request is granted.")
 		  ElseIf Response.StatusCode = 302 Then
-		    Response.AppendHeader("X-Judgement-Render", "Your request is pending.")
+		    Response.SetHeader("X-Judgement-Render", "Your request is pending.")
 		  Else
-		    Response.AppendHeader("X-Judgement-Render", "Your request is denied.")
+		    Response.SetHeader("X-Judgement-Render", "Your request is denied.")
 		  End If
 		  Dim c As New HTTPCookie("time", Format(Microseconds, "####"))
 		  Response.SetCookie(c)
