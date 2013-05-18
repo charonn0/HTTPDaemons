@@ -33,8 +33,8 @@ Protected Class HTTPRequest
 		  Dim line As String
 		  line = NthField(data, CRLF, 1)
 		  data = Replace(data, line + CRLF, "")
-		  Me.PostContent = NthField(data, CRLF + CRLF, 2)
-		  data = Replace(data, Me.PostContent, "")
+		  Me.MessageBody = NthField(data, CRLF + CRLF, 2)
+		  data = Replace(data, Me.MessageBody, "")
 		  Me.Headers = New HTTPHeaders(data)
 		  Me.Constructor(NthField(line, " ", 1).Trim)
 		  
@@ -102,7 +102,7 @@ Protected Class HTTPRequest
 		  If Headers.Count > 0 Then
 		    data = data + Headers.Source + CRLF
 		  End If
-		  data = data + CRLF + PostContent.Trim
+		  data = data + CRLF + MessageBody.Trim
 		  
 		  Return data
 		  
@@ -140,6 +140,10 @@ Protected Class HTTPRequest
 
 	#tag Property, Flags = &h0
 		Headers As HTTPHeaders
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		MessageBody As String
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -189,10 +193,6 @@ Protected Class HTTPRequest
 
 	#tag Property, Flags = &h0
 		Path As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		PostContent As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

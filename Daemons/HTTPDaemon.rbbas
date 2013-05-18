@@ -29,6 +29,11 @@ Inherits TCPSocket
 		      End If
 		    End If
 		  End If
+		  
+		  If clientrequest.Method = RequestMethod.TRACE Then
+		    clientrequest.MessageBody = Data
+		  End If
+		  
 		  If Redirects.HasKey(clientrequest.Path) And doc = Nil Then
 		    doc = Redirects.Value(clientrequest.Path)
 		    doc.FromCache = True

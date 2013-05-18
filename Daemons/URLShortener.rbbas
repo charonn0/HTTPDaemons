@@ -15,7 +15,7 @@ Inherits HTTPDaemon
 		    End If
 		    
 		  Case RequestMethod.POST
-		    Dim formdata As Dictionary = DecodeFormData(ClientRequest.PostContent)
+		    Dim formdata As Dictionary = DecodeFormData(ClientRequest.MessageBody)
 		    doc = CreateShortURL(formdata.Value("ShortName"), formdata.Value("URL"))
 		    
 		  Else

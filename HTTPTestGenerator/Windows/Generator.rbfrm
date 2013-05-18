@@ -1131,7 +1131,7 @@ End
 		    Me.Request.Headers.AppendHeader("User-Agent", ua)
 		  End If
 		  
-		  Me.Request.PostContent = MessageBody.Text
+		  Me.Request.MessageBody = MessageBody.Text
 		  
 		  
 		  If gziprequest.Value Then
