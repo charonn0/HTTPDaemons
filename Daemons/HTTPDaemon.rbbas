@@ -31,7 +31,8 @@ Inherits TCPSocket
 		  End If
 		  
 		  If clientrequest.Method = RequestMethod.TRACE Then
-		    clientrequest.MessageBody = Data
+		    doc = New HTTPResponse(200, "")
+		    doc.MessageBody = Data
 		  End If
 		  
 		  If Redirects.HasKey(clientrequest.Path) And doc = Nil Then
@@ -181,7 +182,7 @@ Inherits TCPSocket
 		  Me.Log(HTTPReplyString(ResponseDocument.StatusCode), 0)
 		  Me.Log(ResponseDocument.Headers.Source(True), -1)
 		  If ResponseDocument.StatusCode = 405 Then 'Method not allowed
-		    ResponseDocument.Headers.SetHeader("Allow", "GET, HEAD, POST")
+		    ResponseDocument.Headers.SetHeader("Allow", "GET, HEAD, POST, TRACE")
 		  End If
 		  
 		  Me.Write(ResponseDocument.ToString)
