@@ -18,7 +18,7 @@ Protected Class HTTPResponse
 		    Me.GZipped = True
 		    #If GZIPAvailable Then
 		      Dim size As Integer = Val(Headers.GetHeader("Content-Length"))
-		      Me.MessageBody = GZip.Uncompress(Me.MessageBody, size)
+		      Me.MessageBody = GZip.Uncompress(Me.MessageBody, size^2)
 		    #endif
 		  End If
 		End Sub

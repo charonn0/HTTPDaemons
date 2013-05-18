@@ -1092,30 +1092,6 @@ End
 		  Else
 		    Me.Request.Headers.AppendHeader("Accept-Encoding", "gzip")
 		  End If
-		  
-		  
-		  'If AutoUA.Value Then
-		  'Dim UAset As Boolean
-		  'For i As Integer = 0 To Headers.LastIndex
-		  'If Headers.Cell(i, 0) = "User-Agent" Then
-		  'Headers.Cell(i, 1) = "BSHTTPAgent\0.1"
-		  'UAset = True
-		  'End If
-		  'RawOutput = RawOutput + Headers.Cell(i, 0) + ": " + Headers.Cell(i, 1) + CRLF
-		  'Next
-		  '
-		  'If Not UAset Then
-		  'Headers.AddRow("User-Agent", "BSHTTPAgent\0.1", "User-Agent specifier")
-		  'RawOutput = RawOutput + "User-Agent" + ": " + "BSHTTPAgent\0.1" + CRLF
-		  'End If
-		  'End If
-		  
-		  
-		  'RawOutput = RawOutput + CRLF + MessageBody.Text
-		  '
-		  'Me.Request = New HTTPRequest(RawOutput)
-		  
-		  'Preview.Text = RawOutput
 		End Sub
 	#tag EndMethod
 
