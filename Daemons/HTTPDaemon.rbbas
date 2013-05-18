@@ -20,6 +20,11 @@ Inherits TCPSocket
 		    GoTo Send
 		  End Try
 		  
+		  If clientrequest.ProtocolVersion < 1.0 Or clientrequest.ProtocolVersion >= 1.2 Then
+		    doc = New HTTPResponse(505, Format(ClientRequest.ProtocolVersion, "#.0"))
+		    GoTo Send
+		  End If
+		  
 		  If Me.AuthenticationRequired Then
 		    If Not Authenticate(clientrequest) Then
 		      doc = New HTTPResponse(401, clientrequest.Path)
