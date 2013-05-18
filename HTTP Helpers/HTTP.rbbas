@@ -86,7 +86,7 @@ Protected Module HTTP
 		    mb.StringValue(8, MessageBody.LenB) = MessageBody
 		    Return mb
 		  #Else
-		    'QnDHTTPd.GZIPAvailable must be set to True and the GZip plugin must be installed.
+		    'HTTP.GZIPAvailable must be set to True and the GZip plugin must be installed.
 		    #pragma Warning "The GZip Plugin is not available or has been disabled."
 		    Return MessageBody
 		  #EndIf
