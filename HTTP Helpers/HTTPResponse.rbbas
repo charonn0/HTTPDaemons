@@ -193,7 +193,7 @@ Protected Class HTTPResponse
 		    page = ReplaceAll(page, "%DOCUMENT%", "An error ocurred while processing your request. We apologize for any inconvenience. </p><p>" + Param + "</p>")
 		    
 		  Case 501
-		    page = ReplaceAll(page, "%DOCUMENT%", "Your browser has made a request  (verb: '" + Param + "') of this server which, while valid, is not implemented by this server.")
+		    page = ReplaceAll(page, "%DOCUMENT%", "Your browser has made a request  (verb: '" + Param + "') of this server which, while perhaps valid, is not implemented by this server.")
 		    
 		  Case 505
 		    page = ReplaceAll(page, "%DOCUMENT%", "Your browser is using an HTTP version (" + Param + ") that is not supported by this server. This server supports HTTP 1.0 and HTTP 1.1.")

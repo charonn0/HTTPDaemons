@@ -535,6 +535,10 @@ Protected Module HTTP
 		    Return HTTP.RequestMethod.TRACE
 		  Case "OPTIONS"
 		    Return RequestMethod.OPTIONS
+		  Case "PATCH"
+		    Return RequestMethod.PATCH
+		  Case "CONNECT"
+		    Return RequestMethod.CONNECT
 		  Else
 		    Return HTTP.RequestMethod.InvalidMethod
 		  End Select
@@ -558,6 +562,10 @@ Protected Module HTTP
 		    Return "TRACE"
 		  Case RequestMethod.OPTIONS
 		    Return "OPTIONS"
+		  Case RequestMethod.PATCH
+		    Return "PATCH"
+		  Case RequestMethod.CONNECT
+		    Return "CONNECT"
 		  Else
 		    Return ""
 		    
@@ -3156,6 +3164,8 @@ Protected Module HTTP
 		  DELETE
 		  TRACE
 		  OPTIONS
+		  PATCH
+		  CONNECT
 		InvalidMethod
 	#tag EndEnum
 

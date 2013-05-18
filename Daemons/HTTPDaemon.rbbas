@@ -5,22 +5,20 @@ Inherits TCPSocket
 		Sub DataAvailable()
 		  Dim data As MemoryBlock = Me.ReadAll
 		  Dim clientrequest As HTTPRequest
+		  Dim doc As HTTPResponse
 		  Try
 		    clientrequest = New HTTPRequest(data, AuthenticationRealm, DigestAuthenticationOnly)
+		    Me.Log(ClientRequest.MethodName + " " + ClientRequest.Path + " " + "HTTP/" + Format(ClientRequest.ProtocolVersion, "#.0"), 0)
+		    Me.Log(ClientRequest.Headers.Source, -1)
+		    
+		    Dim tmp As HTTPRequest = clientrequest
+		    If TamperRequest(tmp) Then
+		      clientrequest = tmp
+		    End If
 		  Catch err As UnsupportedFormatException
-		    SendResponse(New HTTPResponse(400, "")) 'bad request
-		    Return
+		    doc = New HTTPResponse(400, "") 'bad request
+		    GoTo Send
 		  End Try
-		  
-		  Me.Log(ClientRequest.MethodName + " " + ClientRequest.Path + " " + "HTTP/" + Format(ClientRequest.ProtocolVersion, "#.0"), 0)
-		  Me.Log(ClientRequest.Headers.Source, -1)
-		  
-		  Dim tmp As HTTPRequest = clientrequest
-		  If TamperRequest(tmp) Then
-		    clientrequest = tmp
-		  End If
-		  
-		  Dim doc As HTTPResponse
 		  
 		  If Me.AuthenticationRequired Then
 		    If Not Authenticate(clientrequest) Then
@@ -43,7 +41,7 @@ Inherits TCPSocket
 		    Me.Log("Using redirect.", -2)
 		  End If
 		  
-		  
+		  Send:
 		  If doc = Nil Then
 		    doc = HandleRequest(clientrequest)
 		  End If
@@ -64,10 +62,12 @@ Inherits TCPSocket
 		    Case RequestMethod.GET, RequestMethod.HEAD
 		      doc = New HTTPResponse(404, clientrequest.Path)
 		    Else
-		      If clientrequest.Method = RequestMethod.InvalidMethod And clientrequest.MethodName <> "" Then
-		        doc = New HTTPResponse(405, clientrequest.MethodName) 'Not allowed
-		      Else
+		      If clientrequest.MethodName <> "" And clientrequest.Method = RequestMethod.InvalidMethod Then
+		        doc = New HTTPResponse(501, clientrequest.MethodName) 'Not implemented
+		      ElseIf clientrequest.MethodName = "" Then
 		        doc = New HTTPResponse(400, "") 'bad request
+		      ElseIf clientrequest.MethodName <> "" Then
+		        doc = New HTTPResponse(405, clientrequest.MethodName)
 		      End If
 		    End Select
 		  End If
