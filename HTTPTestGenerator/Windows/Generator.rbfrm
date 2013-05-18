@@ -1100,6 +1100,7 @@ End
 #tag WindowCode
 	#tag Method, Flags = &h0
 		Sub Generate()
+		  mTheURL = Nil
 		  Me.Request = New HTTPRequest(RequestMethod.Text)
 		  Me.Request.Path = Join(theURL.ServerFile, "/")
 		  If Me.Request.path = "" Then Me.Request.path = "/"
@@ -1137,13 +1138,6 @@ End
 		    Me.Request.Headers.SetHeader("Accept-Encoding", "gzip")
 		  End If
 		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function TheURL() As URI
-		  'If Right(URL.Text, 1) <> "/" Then URL.Text = URL.Text + "/"
-		  Return New URI(URL.Text)
-		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1000
@@ -1196,6 +1190,10 @@ End
 	#tag EndMethod
 
 
+	#tag Property, Flags = &h21
+		Private mTheURL As URI
+	#tag EndProperty
+
 	#tag Property, Flags = &h0
 		Output As String
 	#tag EndProperty
@@ -1207,6 +1205,18 @@ End
 	#tag Property, Flags = &h0
 		Response As HTTPResponse
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mTheURL = Nil Then
+			    mTheURL = New URI(URL.Text)
+			  End If
+			  return mTheURL
+			End Get
+		#tag EndGetter
+		TheURL As URI
+	#tag EndComputedProperty
 
 
 #tag EndWindowCode
