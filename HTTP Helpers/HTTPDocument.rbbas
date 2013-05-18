@@ -219,7 +219,7 @@ Protected Class HTTPDocument
 		  If TamperPageData(data) Then
 		    Me.Pagedata = data
 		  End If
-		  Return HTTPResponse(Me.StatusCode) + CRLF + Me.Headers.Source + CRLF + CRLF + Me.Pagedata
+		  Return HTTPResponse(Me.StatusCode) + CRLF + Me.Headers.Source(True) + CRLF + CRLF + Me.Pagedata
 		  
 		End Function
 	#tag EndMethod

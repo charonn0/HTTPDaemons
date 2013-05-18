@@ -203,7 +203,7 @@ Inherits TCPSocket
 		    If PageCache.HasKey(ResponseDocument.Path) Then PageCache.Remove(ResponseDocument.Path)
 		  End If
 		  Me.Log(HTTPResponse(ResponseDocument.StatusCode), 0)
-		  Me.Log(ResponseDocument.Headers.Source, -1)
+		  Me.Log(ResponseDocument.Headers.Source(True), -1)
 		  If ResponseDocument.StatusCode = 405 Then 'Method not allowed
 		    ResponseDocument.Headers.SetHeader("Allow", "GET, HEAD, POST")
 		  End If

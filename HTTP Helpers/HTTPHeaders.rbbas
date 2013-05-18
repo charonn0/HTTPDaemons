@@ -112,10 +112,10 @@ Inherits InternetHeaders
 		  Dim h As New HTTPHeaders
 		  For i As Integer = 0 To Me.Count - 1
 		    If Me.Name(i) <> headername Then
-		      h.AppendHeader(Me.Name(i), Me.Value(i))
+		      h.SetHeader(Me.Name(i), Me.Value(i))
 		    End If
 		  Next
-		  h.Copy(Me)
+		  'h.Copy(Me)
 		End Sub
 	#tag EndMethod
 
@@ -147,11 +147,15 @@ Inherits InternetHeaders
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Source() As String
+		Function Source(SetCookies As Boolean = False) As String
 		  Dim data As String = Super.Source
 		  
 		  For Each c As HTTPCookie In Me.Cookies
-		    data = data + CRLF + "Set-Cookie: " + c.ToString
+		    If SetCookies Then
+		      data = data + CRLF + "Set-Cookie: " + c.ToString
+		    Else
+		      data = data + CRLF + "Cookie: " + c.Name + "=" + c.Value
+		    End If
 		  Next
 		  
 		  Return data
