@@ -1102,7 +1102,7 @@ End
 
 	#tag Method, Flags = &h1000
 		Sub Update(Raw As String)
-		  Response = New HTTPResponse(Raw)
+		  Response = New HTTPResponse(Raw, "", False)
 		  'Dim response, h(), data As String
 		  'response = NthField(Raw, CRLF, 1)
 		  'Raw = Replace(Raw, response + CRLF, "")

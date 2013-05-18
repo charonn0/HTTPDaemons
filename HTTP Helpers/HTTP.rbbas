@@ -65,30 +65,30 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GZipPage(PageData As String) As String
+		Function GZipPage(MessageBody As String) As String
 		  'This function requires the GZip plugin available at http://sourceforge.net/projects/realbasicgzip/
-		  'Returns the passed PageData after being compressed. If GZIPAvailable = false, returns the original PageData unchanged.
+		  'Returns the passed MessageBody after being compressed. If GZIPAvailable = false, returns the original MessageBody unchanged.
 		  #If GZipAvailable Then'
-		    Dim size As Single = PageData.LenB
-		    If size > 2^26 Then Return PageData 'if bigger than 64MB, don't try compressing it.
+		    Dim size As Single = MessageBody.LenB
+		    If size > 2^26 Then Return MessageBody 'if bigger than 64MB, don't try compressing it.
 		    System.DebugLog(App.ExecutableFile.Name + ": About to GZip data. Size: " + FormatBytes(size))
-		    PageData = GZip.Compress(PageData)
-		    size = PageData.LenB * 100 / size
-		    System.DebugLog(App.ExecutableFile.Name + ": GZip done. New size: " + FormatBytes(PageData.LenB) + " (" + Format(size, "##0.0##\%") + " of original.)")
+		    MessageBody = GZip.Compress(MessageBody)
+		    size = MessageBody.LenB * 100 / size
+		    System.DebugLog(App.ExecutableFile.Name + ": GZip done. New size: " + FormatBytes(MessageBody.LenB) + " (" + Format(size, "##0.0##\%") + " of original.)")
 		    If GZip.Error <> 0 Then
 		      Raise New RuntimeException
 		    End If
-		    Dim mb As New MemoryBlock(PageData.LenB + 8)
+		    Dim mb As New MemoryBlock(MessageBody.LenB + 8)
 		    'magic
 		    mb.Byte(0) = &h1F
 		    mb.Byte(1) = &h8B
 		    mb.Byte(2) = &h08
-		    mb.StringValue(8, PageData.LenB) = PageData
+		    mb.StringValue(8, MessageBody.LenB) = MessageBody
 		    Return mb
 		  #Else
 		    'QnDHTTPd.GZIPAvailable must be set to True and the GZip plugin must be installed.
 		    #pragma Warning "The GZip Plugin is not available or has been disabled."
-		    Return PageData
+		    Return MessageBody
 		  #EndIf
 		End Function
 	#tag EndMethod
@@ -424,7 +424,7 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function HTTPResponse(Code As Integer) As String
+		Function HTTPReplyString(Code As Integer) As String
 		  'Returns the properly formatted HTTP response line for a given HTTP status code.
 		  'e.g. HTTPResponse(404) = "HTTP/1.1 404 Not Found"
 		  

@@ -8,45 +8,45 @@ Inherits HTTPDaemon
 	#tag EndEvent
 
 	#tag Event
-		Function HandleRequest(ClientRequest As HTTPRequest) As HTTPDocument
-		  Dim doc As HTTPDocument 'The response object
+		Function HandleRequest(ClientRequest As HTTPRequest) As HTTPResponse
+		  Dim doc As HTTPResponse 'The response object
 		  Dim item As FolderItem = FindItem(ClientRequest.Path)
 		  
 		  Select Case ClientRequest.Method
 		  Case RequestMethod.GET, RequestMethod.HEAD
 		    If IsCached(ClientRequest) Then
 		      'Cache hit
-		      Dim cache As HTTPDocument = PageCache.Value(ClientRequest.Path)
-		      doc = New HTTPDocument(cache, ClientRequest.Path)
+		      Dim cache As HTTPResponse = PageCache.Value(ClientRequest.Path)
+		      doc = New HTTPResponse(cache, ClientRequest.Path)
 		      doc.FromCache = True
 		      Me.Log("Page from cache", -2)
 		      
 		    ElseIf item = Nil Then
 		      '404 Not found
 		      Me.Log("Page not found", -2)
-		      doc = New HTTPDocument(404, ClientRequest.Path)
+		      doc = New HTTPResponse(404, ClientRequest.Path)
 		      
 		    ElseIf item.Directory And Not Me.DirectoryBrowsing Then
 		      '403 Forbidden!
 		      Me.Log("Page is directory and DirectoryBrowsing=False", -2)
-		      doc = New HTTPDocument(403, ClientRequest.Path)
+		      doc = New HTTPResponse(403, ClientRequest.Path)
 		      
 		    ElseIf ClientRequest.Path = "/" And Not item.Directory Then
 		      '302 redirect from "/" to "/" + item.name
-		      doc = New HTTPDocument(302, ClientRequest.Path)
+		      doc = New HTTPResponse(302, ClientRequest.Path)
 		      doc.Headers.SetHeader("Location", "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name)
 		    Else
 		      '200 OK
 		      Me.Log("Found page", -2)
-		      doc = New HTTPDocument(item, ClientRequest.Path)
+		      doc = New HTTPResponse(item, ClientRequest.Path)
 		    End If
 		    
 		  Case RequestMethod.POST, RequestMethod.TRACE, RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.InvalidMethod
 		    
-		    doc = New HTTPDocument(405, ClientRequest.MethodName)
+		    doc = New HTTPResponse(405, ClientRequest.MethodName)
 		    
 		  Else
-		    doc = New HTTPDocument(400, ClientRequest.MethodName)
+		    doc = New HTTPResponse(400, ClientRequest.MethodName)
 		    
 		  End Select
 		  

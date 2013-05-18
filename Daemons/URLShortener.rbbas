@@ -2,14 +2,14 @@
 Protected Class URLShortener
 Inherits HTTPDaemon
 	#tag Event
-		Function HandleRequest(ClientRequest As HTTPRequest) As HTTPDocument
-		  Dim doc As HTTPDocument
+		Function HandleRequest(ClientRequest As HTTPRequest) As HTTPResponse
+		  Dim doc As HTTPResponse
 		  
 		  Select Case ClientRequest.Method
 		  Case RequestMethod.GET
 		    If ClientRequest.Path = "/Create" Then
-		      doc = New HTTPDocument(200, ClientRequest.Path)
-		      doc.Pagedata = ReplaceAll(NEWURLPAGE, "%SIGNATURE%", "<em>Powered By " + HTTPDaemon.DaemonVersion + "</em><br />")
+		      doc = New HTTPResponse(200, ClientRequest.Path)
+		      doc.MessageBody = ReplaceAll(NEWURLPAGE, "%SIGNATURE%", "<em>Powered By " + HTTPDaemon.DaemonVersion + "</em><br />")
 		    Else
 		      doc = ClickShortURL(ClientRequest.Path)
 		    End If
@@ -19,9 +19,9 @@ Inherits HTTPDaemon
 		    doc = CreateShortURL(formdata.Value("ShortName"), formdata.Value("URL"))
 		    
 		  Else
-		    doc = New HTTPDocument(405, ClientRequest.MethodName)
+		    doc = New HTTPResponse(405, ClientRequest.MethodName)
 		    doc.Headers.SetHeader("Allow", "GET, POST")
-		    doc.Pagedata = ""
+		    doc.MessageBody = ""
 		  End Select
 		  
 		  Return doc
@@ -30,14 +30,14 @@ Inherits HTTPDaemon
 
 
 	#tag Method, Flags = &h0
-		 Shared Function ClickShortURL(ShortPath As String) As HTTPDocument
-		  Dim doc As HTTPDocument
+		 Shared Function ClickShortURL(ShortPath As String) As HTTPResponse
+		  Dim doc As HTTPResponse
 		  If Left(Shortpath, 1) = "/" Then Shortpath = Replace(Shortpath, "/", "")
 		  If HTTPDaemon.Redirects.HasKey(Shortpath) Then
 		    doc = HTTPDaemon.Redirects.Value(Shortpath)
 		    
 		  Else
-		    doc = New HTTPDocument(404, ShortPath)
+		    doc = New HTTPResponse(404, ShortPath)
 		  End If
 		  
 		  Return doc
@@ -52,13 +52,13 @@ Inherits HTTPDaemon
 		  // Constructor() -- From TCPSocket
 		  // Constructor() -- From SocketCore
 		  Super.Constructor
-		  Me.AddRedirect(New HTTPDocument("/", "/Create"))
+		  Me.AddRedirect(New HTTPResponse("/", "/Create"))
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CreateShortURL(ShortPath As String, Location As String) As HTTPDocument
-		  HTTPDaemon.Redirects.Value(ShortPath) = New HTTPDocument(ShortPath, Location)
+		Function CreateShortURL(ShortPath As String, Location As String) As HTTPResponse
+		  HTTPDaemon.Redirects.Value(ShortPath) = New HTTPResponse(ShortPath, Location)
 		  Return HTTPDaemon.Redirects.Value(ShortPath)
 		End Function
 	#tag EndMethod

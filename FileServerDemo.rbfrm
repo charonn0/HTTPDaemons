@@ -242,6 +242,7 @@ Begin Window FileServerDemo
       AuthenticationRealm=   "Restricted Area"
       AuthenticationRequired=   False
       DirectoryBrowsing=   True
+      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       KeepListening   =   False
@@ -249,8 +250,11 @@ Begin Window FileServerDemo
       LockedInPosition=   False
       Port            =   0
       Scope           =   0
+      TabIndex        =   6
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   12
+      Visible         =   True
       Width           =   32
    End
    Begin ComboBox LogLevel
@@ -331,7 +335,9 @@ Begin Window FileServerDemo
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
+      TabIndex        =   9
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   203
       Value           =   0
       Visible         =   True
@@ -617,7 +623,7 @@ End
 		  Sock.Port = Val(port.Text)
 		  Sock.Document = SharedFile
 		  'Sock.Authenticate = CheckBox2.Value
-		  Dim redirect As New HTTPDocument("/bs", "http://www.boredomsoft.org")
+		  Dim redirect As New HTTPResponse("/bs", "http://www.boredomsoft.org")
 		  Sock.AddRedirect(redirect)
 		  Sock.Listen
 		  ShowURL("http://" + Sock.NetworkInterface.IPAddress + ":" + Str(Sock.Port) + "/")
@@ -702,7 +708,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function TamperResponse(ByRef Response As HTTPDocument) As Boolean
+		Function TamperResponse(ByRef Response As HTTPResponse) As Boolean
 		  If Response.StatusCode = 200 Then
 		    Response.SetHeader("X-Judgement-Render", "Your request is granted.")
 		  ElseIf Response.StatusCode = 302 Then
