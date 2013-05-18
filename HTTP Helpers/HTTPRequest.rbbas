@@ -36,23 +36,7 @@ Protected Class HTTPRequest
 		  Me.PostContent = NthField(data, CRLF + CRLF, 2)
 		  data = Replace(data, Me.PostContent, "")
 		  Me.Headers = New HTTPHeaders(data)
-		  Me.TrueMethodName = NthField(line, " ", 1).Trim
-		  Select Case Me.TrueMethodName
-		  Case "GET"
-		    Me.Method = RequestMethod.GET
-		  Case "HEAD"
-		    Me.Method = RequestMethod.HEAD
-		  Case "TRACE"
-		    Me.Method = RequestMethod.TRACE
-		  Case "DELETE"
-		    Me.Method = RequestMethod.DELETE
-		  Case "POST"
-		    Me.Method = RequestMethod.POST
-		  Case "PUT"
-		    Me.Method = RequestMethod.PUT
-		  Else
-		    Me.Method = RequestMethod.InvalidMethod
-		  End Select
+		  Me.Constructor(NthField(line, " ", 1).Trim)
 		  
 		  Me.Path = URLDecode(NthField(line, " ", 2).Trim)
 		  Dim tmp As String = NthField(Me.Path, "?", 2)
