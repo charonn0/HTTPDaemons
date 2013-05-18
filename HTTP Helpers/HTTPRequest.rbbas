@@ -5,25 +5,25 @@ Protected Class HTTPRequest
 		  Select Case Method
 		  Case "GET"
 		    Me.Method = HTTP.RequestMethod.GET
-		    Me.TrueMethodName = "GET"
+		    mTrueMethodName = "GET"
 		  Case "HEAD"
 		    Me.Method = HTTP.RequestMethod.HEAD
-		    Me.TrueMethodName = "HEAD"
+		    mTrueMethodName = "HEAD"
 		  Case "DELETE"
 		    Me.Method = HTTP.RequestMethod.DELETE
-		    Me.TrueMethodName = "DELETE"
+		    mTrueMethodName = "DELETE"
 		  Case "POST"
 		    Me.Method = HTTP.RequestMethod.POST
-		    Me.TrueMethodName = "POST"
+		    mTrueMethodName = "POST"
 		  Case "PUT"
 		    Me.Method = HTTP.RequestMethod.PUT
-		    Me.TrueMethodName = "PUT"
+		    mTrueMethodName = "PUT"
 		  Case "TRACE"
 		    Me.Method = HTTP.RequestMethod.TRACE
-		    Me.TrueMethodName = "TRACE"
+		    mTrueMethodName = "TRACE"
 		  Else
 		    Me.Method = HTTP.RequestMethod.InvalidMethod
-		    Me.TrueMethodName = Method
+		    mTrueMethodName = Method
 		  End Select
 		End Sub
 	#tag EndMethod
@@ -142,6 +142,10 @@ Protected Class HTTPRequest
 		Method As RequestMethod
 	#tag EndProperty
 
+	#tag Property, Flags = &h21
+		Private mTrueMethodName As String
+	#tag EndProperty
+
 	#tag Property, Flags = &h0
 		Path As String
 	#tag EndProperty
@@ -154,9 +158,14 @@ Protected Class HTTPRequest
 		ProtocolVersion As Single
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mTrueMethodName
+			End Get
+		#tag EndGetter
 		TrueMethodName As String
-	#tag EndProperty
+	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
