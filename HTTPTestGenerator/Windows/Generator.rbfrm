@@ -1140,9 +1140,9 @@ End
 		    
 		    Headers1.AddRow(n, v, c)
 		  Next
-		  CookiesButton.Visible = UBound(Response.Headers.GetCookies) > -1
+		  CookiesButton.Visible = UBound(Response.Headers.Cookies) > -1
 		  CookiesButton.Invalidate(True)
-		  CookiesButton.HelpTag = Str(UBound(Response.Headers.GetCookies) + 1) + " cookies"
+		  CookiesButton.HelpTag = Str(UBound(Response.Headers.Cookies) + 1) + " cookies"
 		  
 		  If Sock.IsConnected Then
 		    IPAddress1.Text = "Open"
@@ -1176,7 +1176,7 @@ End
 #tag Events CookiesButton
 	#tag Event
 		Sub Action()
-		  CookieViewer.ShowCookies(Response.Headers.GetCookies)
+		  CookieViewer.ShowCookies(Response.Headers.Cookies)
 		End Sub
 	#tag EndEvent
 	#tag Event

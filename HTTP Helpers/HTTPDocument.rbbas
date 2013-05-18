@@ -189,10 +189,9 @@ Protected Class HTTPDocument
 
 	#tag Method, Flags = &h0
 		Function GetCookie(CookieName As String) As HTTPCookie
-		  Dim Cookies() As HTTPCookie = Me.Headers.GetCookies
-		  For i As Integer = 0 To UBound(Cookies)
-		    If Cookies(i).Name = CookieName Then
-		      Return Cookies(i)
+		  For i As Integer = 0 To UBound(Headers.Cookies)
+		    If Headers.Cookies(i).Name = CookieName Then
+		      Return Headers.Cookies(i)
 		    End If
 		  Next
 		End Function

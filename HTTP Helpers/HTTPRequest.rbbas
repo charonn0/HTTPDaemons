@@ -59,7 +59,6 @@ Protected Class HTTPRequest
 		  path = Replace(path, "?" + tmp, "")
 		  Me.Arguments = Split(tmp, "&")
 		  Me.ProtocolVersion = CDbl(Replace(NthField(line, " ", 3).Trim, "HTTP/", ""))
-		  Me.Cookies = Me.Headers.GetCookies
 		  Me.Expiry = New Date
 		  Me.Expiry.TotalSeconds = Me.Expiry.TotalSeconds + 60
 		  Me.AuthDigest = RequireDigestAuth

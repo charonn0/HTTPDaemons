@@ -36,29 +36,12 @@ Inherits InternetHeaders
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetCookies() As HTTPCookie()
-		  'Returns a string array of all HTTP cookies
-		  'DimHTTPCookies() As HTTPCookie
-		  
-		  'Dim head As String = Me.GetHeader("Cookie")
-		  'Dim c() As String = Split(head, ";")
-		  'For Each cook As String In c
-		  'Dim l, r As String
-		  'l = NthField(cook, "=", 1).Trim
-		  'r = NthField(cook, "=", 2).Trim
-		  'cookies.Append(New HTTPCookie(l, r))
-		  'Next
-		  '
-		  'head = Me.GetHeader("Set-Cookie")
-		  'c() = Split(head, ";")
-		  'For Each cook As String In c
-		  'Dim l, r As String
-		  'l = NthField(cook, "=", 1).Trim
-		  'r = NthField(cook, "=", 2).Trim
-		  'cookies.Append(New HTTPCookie(l, r))
-		  'Next
-		  
-		  Return cookies
+		Function GetCookie(Name As String) As HTTPCookie
+		  For i As Integer = UBound(Me.Cookies) DownTo 0
+		    If Me.Cookies(i).Name = Name Then
+		      Return Me.Cookies(i)
+		    End If
+		  Next
 		End Function
 	#tag EndMethod
 
