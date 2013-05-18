@@ -66,18 +66,6 @@ Inherits InternetHeaders
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub RemoveHeader(Headername As String)
-		  Dim h As New HTTPHeaders
-		  For i As Integer = 0 To Me.Count - 1
-		    If Me.Name(i) <> headername Then
-		      h.SetHeader(Me.Name(i), Me.Value(i))
-		    End If
-		  Next
-		  'h.Copy(Me)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Sub SetCookie(c As HTTPCookie)
 		  'Dim data As String
 		  'If Me.HasHeader("Set-Cookie") Then
@@ -98,7 +86,7 @@ Inherits InternetHeaders
 	#tag Method, Flags = &h0
 		Sub SetHeader(Name As String, Value As String)
 		  If Me.HasHeader(Name) Then
-		    Me.RemoveHeader(Name)
+		    Me.Delete(Name)
 		  End If
 		  Me.AppendHeader(Name, Value)
 		End Sub

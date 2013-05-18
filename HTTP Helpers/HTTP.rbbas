@@ -424,6 +424,101 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function HTTPHeaderComment(HeaderName As String, HeaderValue As String) As String
+		  Select Case HeaderName
+		  Case "Date"
+		    Dim d As Date = HTTPDate(HeaderValue)
+		    Dim e As New Date
+		    d.GMTOffset = e.GMTOffset
+		    Return d.ShortDate + " " + d.ShortTime + "(Local time)"
+		    
+		  Case "Content-Length"
+		    Return FormatBytes(Val(HeaderValue))
+		    
+		  Case "Location"
+		    Return "Redirect address"
+		    
+		  Case "Authorization", "WWW-Authenticate"
+		    Return "HTTP Authentication"
+		    
+		  Case "Connection"
+		    If HeaderValue = "close" Then
+		      Return "Connection will close"
+		    ElseIf HeaderValue = "keep-alive" Then
+		      Return "Connection will be maintained"
+		    End If
+		    
+		  Case "Content-Encoding", "Accept-Encoding", "Transfer-Encoding"
+		    Return "Message body encoding"
+		    
+		  Case "Host"
+		    Return "Domain the request is directed at"
+		    
+		  Case "Range"
+		    Return "Partial download requested"
+		    
+		  Case "Accept-Ranges"
+		    Return "Partial download supported"
+		    
+		  Case "Referer"
+		    Return "Referring URL"
+		    
+		  Case "User-Agent"
+		    Return "Client-side program name"
+		    
+		  Case "Server"
+		    Return "Server-side program name"
+		    
+		  Case "Via"
+		    Return "Intermediary Web Proxy"
+		    
+		  Case "Warning"
+		    Return "General warning about message body"
+		    
+		  Case "DNT"
+		    Return "Do Not Track (i.e. cookies)"
+		    
+		  Case "X-Forwarded-For"
+		    Return "Requestor's IP as seen by a proxy"
+		    
+		  Case "Allow"
+		    Return "Server supported HTTP methods"
+		    
+		  Case "Content-Location"
+		    Return "Alternate URL for this resource"
+		    
+		  Case "ETag"
+		    Return "Opaque document version marker"
+		    
+		  Case "Expires"
+		    Dim d As Date = HTTPDate(HeaderValue)
+		    Dim e As New Date
+		    d.GMTOffset = e.GMTOffset
+		    Return d.ShortDate + " " + d.ShortTime + "(Local time)"
+		    
+		  Case "Last-Modified"
+		    Dim d As Date = HTTPDate(HeaderValue)
+		    Dim e As New Date
+		    d.GMTOffset = e.GMTOffset
+		    Return d.ShortDate + " " + d.ShortTime + "(Local time)"
+		    
+		  Case "Link"
+		    Return "URL to a related document (e.g. RSS feed)"
+		    
+		  Case "P3P"
+		    Return "P3P policy, often invalid"
+		    
+		  Case "Refresh"
+		    Return "Redirect URL with optional delay"
+		    
+		  End Select
+		  
+		Exception
+		  Return ""
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function HTTPReplyString(Code As Integer) As String
 		  'Returns the properly formatted HTTP response line for a given HTTP status code.
 		  'e.g. HTTPResponse(404) = "HTTP/1.1 404 Not Found"

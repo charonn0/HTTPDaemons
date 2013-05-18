@@ -43,7 +43,6 @@ Begin Window Generator
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
@@ -62,7 +61,6 @@ Begin Window Generator
          HasBackColor    =   False
          Height          =   384
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "GroupBox3"
          Left            =   622
          LockBottom      =   ""
@@ -145,7 +143,6 @@ Begin Window Generator
          Selectable      =   False
          TabIndex        =   0
          TabPanelIndex   =   0
-         TabStop         =   True
          Text            =   ""
          TextAlign       =   0
          TextColor       =   255
@@ -157,6 +154,50 @@ Begin Window Generator
          Underline       =   ""
          Visible         =   True
          Width           =   157
+      End
+      Begin BevelButton ResponseHeaderView
+         AcceptFocus     =   False
+         AutoDeactivate  =   True
+         BackColor       =   0
+         Bevel           =   4
+         Bold            =   False
+         ButtonType      =   0
+         Caption         =   ""
+         CaptionAlign    =   3
+         CaptionDelta    =   0
+         CaptionPlacement=   1
+         Enabled         =   False
+         HasBackColor    =   False
+         HasMenu         =   0
+         Height          =   22
+         HelpTag         =   "Expanded Header View"
+         Icon            =   86560767
+         IconAlign       =   1
+         IconDX          =   0
+         IconDY          =   0
+         Index           =   -2147483648
+         InitialParent   =   "GroupBox3"
+         Italic          =   False
+         Left            =   1169
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         MenuValue       =   0
+         Scope           =   0
+         TabIndex        =   3
+         TabPanelIndex   =   0
+         TabStop         =   True
+         TextColor       =   0
+         TextFont        =   "System"
+         TextSize        =   ""
+         TextUnit        =   0
+         Top             =   177
+         Underline       =   False
+         Value           =   False
+         Visible         =   True
+         Width           =   22
       End
    End
    Begin GroupBox GroupBox2
@@ -178,7 +219,6 @@ Begin Window Generator
       Scope           =   0
       TabIndex        =   1
       TabPanelIndex   =   0
-      TabStop         =   True
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
@@ -189,18 +229,14 @@ Begin Window Generator
    End
    Begin TCPSocket Sock
       Address         =   ""
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   501
       LockedInPosition=   False
       Port            =   0
       Scope           =   0
-      TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   -1
-      Visible         =   True
       Width           =   32
    End
    Begin TextArea OutputLog
@@ -270,7 +306,6 @@ Begin Window Generator
       Selectable      =   False
       TabIndex        =   3
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Status Code:"
       TextAlign       =   2
       TextColor       =   0
@@ -305,7 +340,6 @@ Begin Window Generator
       Selectable      =   False
       TabIndex        =   4
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Status Message:"
       TextAlign       =   2
       TextColor       =   0
@@ -340,7 +374,6 @@ Begin Window Generator
       Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   ""
       TextAlign       =   0
       TextColor       =   255
@@ -375,7 +408,6 @@ Begin Window Generator
       Selectable      =   False
       TabIndex        =   1
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   ""
       TextAlign       =   0
       TextColor       =   16711680
@@ -410,7 +442,6 @@ Begin Window Generator
       Selectable      =   False
       TabIndex        =   5
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Remote IP:"
       TextAlign       =   2
       TextColor       =   0
@@ -445,7 +476,6 @@ Begin Window Generator
       Selectable      =   False
       TabIndex        =   7
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   ""
       TextAlign       =   0
       TextColor       =   255
@@ -477,7 +507,6 @@ Begin Window Generator
       Scope           =   0
       TabIndex        =   0
       TabPanelIndex   =   0
-      TabStop         =   True
       TextFont        =   "System"
       TextSize        =   0
       TextUnit        =   0
@@ -773,7 +802,6 @@ Begin Window Generator
          Selectable      =   False
          TabIndex        =   7
          TabPanelIndex   =   0
-         TabStop         =   True
          Text            =   "Message Body:"
          TextAlign       =   0
          TextColor       =   0
@@ -974,7 +1002,6 @@ Begin Window Generator
       End
    End
    Begin Timer DataReceivedTimer
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       Left            =   -3
@@ -982,11 +1009,8 @@ Begin Window Generator
       Mode            =   0
       Period          =   1000
       Scope           =   0
-      TabIndex        =   11
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   597
-      Visible         =   True
       Width           =   32
    End
    Begin Listbox Headers1
@@ -994,7 +1018,7 @@ Begin Window Generator
       AutoHideScrollbars=   True
       Bold            =   ""
       Border          =   True
-      ColumnCount     =   3
+      ColumnCount     =   2
       ColumnsResizable=   True
       ColumnWidths    =   ""
       DataField       =   ""
@@ -1012,7 +1036,7 @@ Begin Window Generator
       Hierarchical    =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      InitialValue    =   "Header Name	Header Value	Comment"
+      InitialValue    =   "Header Name	Header Value"
       Italic          =   ""
       Left            =   631
       LockBottom      =   ""
@@ -1147,24 +1171,16 @@ End
 		  Headers1.DeleteAllRows
 		  CodeName.Text = Response.StatusMessage
 		  For i As Integer = 0 To Response.Headers.Count - 1
-		    Dim n, v, c As String
+		    Dim n, v As String
 		    n = Response.Headers.Name(i)
 		    v = Response.Headers.Value(n)
-		    Select Case n
-		    Case "Content-Length"
-		      c = FormatBytes(Val(v))
-		    Case "Date"
-		      Dim d As Date = HTTPDate(v)
-		      Dim e As New Date
-		      d.GMTOffset = e.GMTOffset
-		      c = d.ShortDate + " " + d.ShortTime + "(Local time)"
-		    End Select
 		    
-		    Headers1.AddRow(n, v, c)
+		    Headers1.AddRow(n, v)
 		  Next
 		  CookiesButton.Visible = UBound(Response.Headers.Cookies) > -1
 		  CookiesButton.Invalidate(True)
 		  CookiesButton.HelpTag = Str(UBound(Response.Headers.Cookies) + 1) + " cookies"
+		  ResponseHeaderView.Enabled = True
 		  
 		  If Sock.IsConnected Then
 		    IPAddress1.Text = "Open"
@@ -1214,6 +1230,13 @@ End
 	#tag Event
 		Sub MouseExit()
 		  Me.Icon = cookie_icon_grey
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events ResponseHeaderView
+	#tag Event
+		Sub Action()
+		  HeaderViewer.ShowHeaders(Response.Headers)
 		End Sub
 	#tag EndEvent
 #tag EndEvents

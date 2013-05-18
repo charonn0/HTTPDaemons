@@ -290,7 +290,7 @@ Protected Class HTTPResponse
 	#tag Method, Flags = &h0
 		Sub SetHeader(Name As String, Value As String)
 		  If Headers.HasHeader(Name) Then
-		    Headers.RemoveHeader(Name)
+		    Headers.Delete(Name)
 		  End If
 		  Me.Headers.AppendHeader(Name, Value)
 		End Sub
@@ -450,6 +450,7 @@ Protected Class HTTPResponse
 			Name="AuthRealm"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="AuthSecure"
@@ -484,6 +485,7 @@ Protected Class HTTPResponse
 			Name="MessageBody"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"
@@ -511,6 +513,7 @@ Protected Class HTTPResponse
 			Name="StatusMessage"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
