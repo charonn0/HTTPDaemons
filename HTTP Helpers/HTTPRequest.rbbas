@@ -85,7 +85,7 @@ Protected Class HTTPRequest
 		    Return "TRACE"
 		    
 		  Else
-		    Return Me.TrueMethodName
+		    Return mTrueMethodName
 		  End Select
 		  
 		  
@@ -94,7 +94,7 @@ Protected Class HTTPRequest
 
 	#tag Method, Flags = &h0
 		Function ToString() As String
-		  Dim data As String = TrueMethodName + " " + Path + " " + "HTTP/" + Format(ProtocolVersion, "#.0") + CRLF
+		  Dim data As String = MethodName + " " + Path + " " + "HTTP/" + Format(ProtocolVersion, "#.0") + CRLF
 		  If Headers.Count > 0 Then
 		    data = data + Headers.Source + CRLF
 		  End If
@@ -138,8 +138,45 @@ Protected Class HTTPRequest
 		Headers As HTTPHeaders
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  return mMethod
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mMethod = value
+			  
+			  Select Case Me.Method
+			  Case RequestMethod.GET
+			    mTrueMethodName = "GET"
+			    
+			  Case RequestMethod.DELETE
+			    mTrueMethodName = "DELETE"
+			    
+			  Case RequestMethod.HEAD
+			    mTrueMethodName = "HEAD"
+			    
+			  Case RequestMethod.POST
+			    mTrueMethodName = "POST"
+			    
+			  Case RequestMethod.PUT
+			    mTrueMethodName = "PUT"
+			    
+			  Case RequestMethod.TRACE
+			    mTrueMethodName = "TRACE"
+			    
+			  End Select
+			  
+			  
+			End Set
+		#tag EndSetter
 		Method As RequestMethod
+	#tag EndComputedProperty
+
+	#tag Property, Flags = &h21
+		Private mMethod As RequestMethod
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -157,15 +194,6 @@ Protected Class HTTPRequest
 	#tag Property, Flags = &h0
 		ProtocolVersion As Single
 	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h0
-		#tag Getter
-			Get
-			  return mTrueMethodName
-			End Get
-		#tag EndGetter
-		TrueMethodName As String
-	#tag EndComputedProperty
 
 
 	#tag ViewBehavior
