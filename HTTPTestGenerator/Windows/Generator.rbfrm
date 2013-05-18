@@ -770,38 +770,6 @@ Begin Window Generator
          Visible         =   True
          Width           =   263
       End
-      Begin CheckBox AutoUA
-         AutoDeactivate  =   True
-         Bold            =   ""
-         Caption         =   "Auto User-Agent"
-         DataField       =   ""
-         DataSource      =   ""
-         Enabled         =   True
-         Height          =   20
-         HelpTag         =   ""
-         Index           =   -2147483648
-         InitialParent   =   "GroupBox1"
-         Italic          =   ""
-         Left            =   454
-         LockBottom      =   ""
-         LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   ""
-         LockTop         =   True
-         Scope           =   0
-         State           =   1
-         TabIndex        =   8
-         TabPanelIndex   =   0
-         TabStop         =   True
-         TextFont        =   "System"
-         TextSize        =   0
-         TextUnit        =   0
-         Top             =   161
-         Underline       =   ""
-         Value           =   True
-         Visible         =   False
-         Width           =   126
-      End
       Begin CheckBox AutoHost
          AutoDeactivate  =   True
          Bold            =   ""
@@ -911,6 +879,83 @@ Begin Window Generator
          Visible         =   True
          Width           =   22
       End
+      Begin HintTextField UAString
+         AcceptTabs      =   ""
+         Alignment       =   0
+         AutoDeactivate  =   True
+         AutomaticallyCheckSpelling=   False
+         BackColor       =   16777215
+         Bold            =   ""
+         Border          =   True
+         CueText         =   ""
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Format          =   ""
+         HasText         =   ""
+         Height          =   22
+         HelpTag         =   ""
+         HintText        =   "User-Agent String"
+         Index           =   -2147483648
+         InitialParent   =   "GroupBox1"
+         Italic          =   ""
+         Left            =   73
+         LimitText       =   0
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Mask            =   ""
+         Password        =   ""
+         ReadOnly        =   ""
+         Scope           =   0
+         TabIndex        =   11
+         TabPanelIndex   =   0
+         TabStop         =   True
+         Text            =   ""
+         TextColor       =   0
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   161
+         Underline       =   ""
+         UseFocusRing    =   True
+         Visible         =   True
+         Width           =   237
+      End
+      Begin CheckBox gziprequest
+         AutoDeactivate  =   True
+         Bold            =   ""
+         Caption         =   "Request GZip"
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "GroupBox1"
+         Italic          =   ""
+         Left            =   454
+         LockBottom      =   ""
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   ""
+         LockTop         =   True
+         Scope           =   0
+         State           =   0
+         TabIndex        =   12
+         TabPanelIndex   =   0
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0
+         TextUnit        =   0
+         Top             =   161
+         Underline       =   ""
+         Value           =   False
+         Visible         =   True
+         Width           =   126
+      End
    End
    Begin Timer DataReceivedTimer
       Height          =   32
@@ -973,33 +1018,81 @@ Begin Window Generator
       Width           =   560
       _ScrollWidth    =   -1
    End
+   Begin CheckBox AutoUA
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "Auto User-Agent"
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   349
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      State           =   1
+      TabIndex        =   8
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   -53
+      Underline       =   ""
+      Value           =   True
+      Visible         =   True
+      Width           =   126
+   End
 End
 #tag EndWindow
 
 #tag WindowCode
 	#tag Method, Flags = &h0
 		Sub Generate()
-		  Dim RawOutput As String
-		  Dim path As String = Join(theURL.ServerFile, "/")
-		  If path = "" Then path = "/"
-		  If theURL.Arguments.Ubound > -1 Then path = path + "?" + Join(theURL.Arguments, "&")
-		  RawOutput = RequestMethod.Text + " " + path + " " + ProtocolVer.Text + CRLF
+		  Me.Request = New HTTPRequest(RequestMethod.Text)
+		  Me.Request.Path = Join(theURL.ServerFile, "/")
+		  If Me.Request.path = "" Then Me.Request.path = "/"
+		  Me.Request.ProtocolVersion = CDbl(NthField(ProtocolVer.Text, "/", 2))
+		  Me.Request.Arguments = TheURL.Arguments
+		  Dim heads As New InternetHeaders
+		  For i As Integer = 0 To Headers.LastIndex
+		    heads.AppendHeader(Headers.Cell(i, 0), Headers.Cell(i, 1))
+		  Next
+		  Me.Request.Headers = New HTTPHeaders(heads.Source)
 		  
 		  If AutoHost.Value Then
-		    Dim Hostset As Boolean
-		    For i As Integer = 0 To Headers.LastIndex
-		      If Headers.Cell(i, 0) = "Host" Then
-		        Headers.Cell(i, 1) = theURL.FQDN
-		        Hostset = True
-		      End If
-		      RawOutput = RawOutput + Headers.Cell(i, 0) + ": " + Headers.Cell(i, 1) + CRLF
-		    Next
-		    
-		    If Not Hostset Then
-		      Headers.AddRow("Host", theURL.FQDN, "Host specifier")
-		      RawOutput = RawOutput + "Host" + ": " + theURL.FQDN + CRLF
+		    If Me.Request.Headers.HasHeader("Host") Then
+		      Me.Request.Headers.SetHeader("Host", theURL.FQDN)
+		    Else
+		      Me.Request.Headers.AppendHeader("Host", theURL.FQDN)
 		    End If
 		  End If
+		  Dim ua As String
+		  If UAString.HasText Then
+		    ua = UAString.Text
+		  Else
+		    ua = "BSHTTPGen\1.0"
+		  End If
+		  If Me.Request.Headers.HasHeader("User-Agent") Then
+		    Me.Request.Headers.SetHeader("User-Agent", ua)
+		  Else
+		    Me.Request.Headers.AppendHeader("User-Agent", ua)
+		  End If
+		  
+		  
+		  If gziprequest.Value Then
+		    Me.Request.Headers.SetHeader("Accept-Encoding", "gzip")
+		  Else
+		    Me.Request.Headers.AppendHeader("Accept-Encoding", "gzip")
+		  End If
+		  
 		  
 		  'If AutoUA.Value Then
 		  'Dim UAset As Boolean
@@ -1018,9 +1111,9 @@ End
 		  'End If
 		  
 		  
-		  RawOutput = RawOutput + CRLF + MessageBody.Text
-		  
-		  Me.Request = New HTTPRequest(RawOutput)
+		  'RawOutput = RawOutput + CRLF + MessageBody.Text
+		  '
+		  'Me.Request = New HTTPRequest(RawOutput)
 		  
 		  'Preview.Text = RawOutput
 		End Sub

@@ -107,35 +107,6 @@ Inherits TCPSocket
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Shared Function GZipPage(PageData As String) As String
-		  'This function requires the GZip plugin available at http://sourceforge.net/projects/realbasicgzip/
-		  'Returns the passed PageData after being compressed. If GZIPAvailable = false, returns the original PageData unchanged.
-		  #If GZipAvailable Then'
-		    Dim size As Single = PageData.LenB
-		    If size > 2^26 Then Return PageData 'if bigger than 64MB, don't try compressing it.
-		    System.DebugLog(App.ExecutableFile.Name + ": About to GZip data. Size: " + FormatBytes(size))
-		    PageData = GZip.Compress(PageData)
-		    size = PageData.LenB * 100 / size
-		    System.DebugLog(App.ExecutableFile.Name + ": GZip done. New size: " + FormatBytes(PageData.LenB) + " (" + Format(size, "##0.0##\%") + " of original.)")
-		    If GZip.Error <> 0 Then
-		      Raise New RuntimeException
-		    End If
-		    Dim mb As New MemoryBlock(PageData.LenB + 8)
-		    'magic
-		    mb.Byte(0) = &h1F
-		    mb.Byte(1) = &h8B
-		    mb.Byte(2) = &h08
-		    mb.StringValue(8, PageData.LenB) = PageData
-		    Return mb
-		  #Else
-		    'QnDHTTPd.GZIPAvailable must be set to True and the GZip plugin must be installed.
-		    #pragma Warning "The GZip Plugin is not available or has been disabled."
-		    Return PageData
-		  #EndIf
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
 		Protected Shared Function IsCached(ClientRequest As HTTPRequest) As Boolean
 		  If PageCache.HasKey(ClientRequest.Path) And UseCache Then
 		    'Dim reqDate As Date = HTTPDate(ClientRequest.Headers.GetHeader("If-Modified-Since"))
@@ -326,9 +297,6 @@ Inherits TCPSocket
 
 
 	#tag Constant, Name = DaemonVersion, Type = String, Dynamic = False, Default = \"QnDHTTPd/1.0", Scope = Public
-	#tag EndConstant
-
-	#tag Constant, Name = GZIPAvailable, Type = Boolean, Dynamic = False, Default = \"False", Scope = Public
 	#tag EndConstant
 
 

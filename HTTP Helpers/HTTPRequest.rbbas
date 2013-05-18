@@ -1,7 +1,35 @@
 #tag Class
 Protected Class HTTPRequest
 	#tag Method, Flags = &h0
-		Sub Constructor(Data As String, AuthRealm As String = "Restricted Content", RequireDigestAuth As Boolean = False)
+		Sub Constructor(Method As String)
+		  Select Case Method
+		  Case "GET"
+		    Me.Method = HTTP.RequestMethod.GET
+		    Me.TrueMethodName = "GET"
+		  Case "HEAD"
+		    Me.Method = HTTP.RequestMethod.HEAD
+		    Me.TrueMethodName = "HEAD"
+		  Case "DELETE"
+		    Me.Method = HTTP.RequestMethod.DELETE
+		    Me.TrueMethodName = "DELETE"
+		  Case "POST"
+		    Me.Method = HTTP.RequestMethod.POST
+		    Me.TrueMethodName = "POST"
+		  Case "PUT"
+		    Me.Method = HTTP.RequestMethod.PUT
+		    Me.TrueMethodName = "PUT"
+		  Case "TRACE"
+		    Me.Method = HTTP.RequestMethod.TRACE
+		    Me.TrueMethodName = "TRACE"
+		  Else
+		    Me.Method = HTTP.RequestMethod.InvalidMethod
+		    Me.TrueMethodName = Method
+		  End Select
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(Data As String, AuthRealm As String, RequireDigestAuth As Boolean)
 		  Dim line As String
 		  line = NthField(data, CRLF, 1)
 		  data = Replace(data, line + CRLF, "")
@@ -143,8 +171,8 @@ Protected Class HTTPRequest
 		ProtocolVersion As Single
 	#tag EndProperty
 
-	#tag Property, Flags = &h1
-		Protected TrueMethodName As String
+	#tag Property, Flags = &h0
+		TrueMethodName As String
 	#tag EndProperty
 
 

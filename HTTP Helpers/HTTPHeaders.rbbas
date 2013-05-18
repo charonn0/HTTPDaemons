@@ -19,7 +19,7 @@ Inherits InternetHeaders
 		      For Each cook As String In c
 		        Dim l, r As String
 		        l = NthField(cook, "=", 1).Trim
-		        r = Right(cook, l.Len + 1)
+		        r = Right(cook, cook.Len - (NthField(cook, "=", 1).Len) - 1)
 		        
 		        Select Case l
 		        Case "Domain"
@@ -30,6 +30,8 @@ Inherits InternetHeaders
 		          ck.Secure = True
 		        Case "Port"
 		          ck.Port = Val(r)
+		        Case "httponly"
+		          ck.Secure = False
 		        Else
 		          'r = NthField(cook, "=", 2).Trim
 		          Dim kc As New HTTPCookie(l, r)

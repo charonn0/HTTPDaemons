@@ -14,12 +14,26 @@ Protected Class HTTPResponse
 		  Me.StatusMessage = HTTPCodeToMessage(Me.StatusCode)
 		  Me.AuthRealm = AuthRealm
 		  Me.AuthSecure = RequireDigestAuth
+		  If Headers.GetHeader("Content-Encoding") = "gzip" Then
+		    Me.GZipped = True
+		    #If GZIPAvailable Then
+		      Dim size As Integer = Val(Headers.GetHeader("Content-Length"))
+		      Me.MessageBody = GZip.Uncompress(Me.MessageBody, size)
+		    #endif
+		  End If
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function ToString() As String
-		  Return HTTPResponse(Me.StatusCode) + CRLF + Me.Headers.Source + CRLF + CRLF + Me.MessageBody
+		  Dim data As String = Me.MessageBody
+		  #If GZIPAvailable Then
+		    If Me.GZipped Then
+		      data = GZipPage(data)
+		    End If
+		  #endif
+		  
+		  Return HTTPResponse(Me.StatusCode) + CRLF + Me.Headers.Source + CRLF + CRLF + data
 		End Function
 	#tag EndMethod
 
@@ -30,6 +44,10 @@ Protected Class HTTPResponse
 
 	#tag Property, Flags = &h0
 		AuthSecure As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		GZipped As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
