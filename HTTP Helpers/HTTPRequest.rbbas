@@ -81,6 +81,19 @@ Protected Class HTTPRequest
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function ToString() As String
+		  Dim data As String = TrueMethodName + " " + Path + " " + "HTTP/" + Format(ProtocolVersion, "#.0") + CRLF
+		  If Headers.Count > 0 Then
+		    data = data + Headers.Source + CRLF
+		  End If
+		  data = data + CRLF + PostContent.Trim
+		  
+		  Return data
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		Arguments() As String
