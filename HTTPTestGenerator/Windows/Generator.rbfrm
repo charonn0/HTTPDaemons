@@ -857,7 +857,7 @@ Begin Window Generator
          HelpTag         =   ""
          Index           =   -2147483648
          InitialParent   =   "GroupBox1"
-         InitialValue    =   "GET\r\nHEAD\r\nPOST\r\nTRACE\r\nDELETE\r\nPUT"
+         InitialValue    =   "GET\r\nHEAD\r\nPOST\r\nTRACE\r\nDELETE\r\nPUT\r\nOPTIONS"
          Italic          =   ""
          Left            =   20
          ListIndex       =   0
@@ -1101,7 +1101,9 @@ End
 	#tag Method, Flags = &h0
 		Sub Generate()
 		  mTheURL = Nil
-		  Me.Request = New HTTPRequest(RequestMethod.Text)
+		  Me.Request = New HTTPRequest()
+		  Me.Request.Method = HTTPMethod(Me.RequestMethod.Text)
+		  If Me.Request.Method = HTTP.RequestMethod.InvalidMethod Then Me.Request.MethodName = Me.RequestMethod.Text
 		  Me.Request.Path = Join(theURL.ServerFile, "/")
 		  If Me.Request.path = "" Then Me.Request.path = "/"
 		  Me.Request.ProtocolVersion = CDbl(NthField(ProtocolVer.Text, "/", 2))

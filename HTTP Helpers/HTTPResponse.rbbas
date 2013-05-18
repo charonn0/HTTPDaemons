@@ -44,34 +44,6 @@ Protected Class HTTPResponse
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Constructor(Method As String)
-		  Select Case Method
-		  Case "GET"
-		    Me.Method = HTTP.RequestMethod.GET
-		    mTrueMethodName = "GET"
-		  Case "HEAD"
-		    Me.Method = HTTP.RequestMethod.HEAD
-		    mTrueMethodName = "HEAD"
-		  Case "DELETE"
-		    Me.Method = HTTP.RequestMethod.DELETE
-		    mTrueMethodName = "DELETE"
-		  Case "POST"
-		    Me.Method = HTTP.RequestMethod.POST
-		    mTrueMethodName = "POST"
-		  Case "PUT"
-		    Me.Method = HTTP.RequestMethod.PUT
-		    mTrueMethodName = "PUT"
-		  Case "TRACE"
-		    Me.Method = HTTP.RequestMethod.TRACE
-		    mTrueMethodName = "TRACE"
-		  Else
-		    Me.Method = HTTP.RequestMethod.InvalidMethod
-		    mTrueMethodName = Method
-		  End Select
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Sub Constructor(Path As String, RedirectURL As String)
 		  'Use this constructor to create a 302 redirect Document
@@ -94,7 +66,8 @@ Protected Class HTTPResponse
 		  data = Replace(data, line + CRLF, "")
 		  data = Replace(data, Me.MessageBody, "")
 		  Me.Headers = New HTTPHeaders(data)
-		  Me.Constructor(NthField(line, " ", 1).Trim)
+		  Me.Method = HTTP.HTTPMethod(NthField(line, " ", 1).Trim)
+		  If Me.Method = RequestMethod.InvalidMethod Then mTrueMethodName = NthField(line, " ", 1).Trim
 		  Me.ProtocolVersion = CDbl(Replace(NthField(line, " ", 1).Trim, "HTTP/", ""))
 		  Me.StatusCode = Val(NthField(line, " ", 2))
 		  Me.StatusMessage = HTTPCodeToMessage(Me.StatusCode)
@@ -273,6 +246,9 @@ Protected Class HTTPResponse
 		  Case RequestMethod.TRACE
 		    Return "TRACE"
 		    
+		  Case RequestMethod.OPTIONS
+		    Return "OPTIONS"
+		    
 		  Else
 		    Return mTrueMethodName
 		  End Select
@@ -399,6 +375,9 @@ Protected Class HTTPResponse
 			    
 			  Case RequestMethod.TRACE
 			    mTrueMethodName = "TRACE"
+			    
+			  Case RequestMethod.OPTIONS
+			    mTrueMethodName = "OPTIONS"
 			    
 			  End Select
 			  

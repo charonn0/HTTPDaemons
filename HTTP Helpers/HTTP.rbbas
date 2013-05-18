@@ -519,6 +519,53 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function HTTPMethod(Method As String) As RequestMethod
+		  Select Case Method
+		  Case "GET"
+		    Return HTTP.RequestMethod.GET
+		  Case "HEAD"
+		    Return HTTP.RequestMethod.HEAD
+		  Case "DELETE"
+		    Return HTTP.RequestMethod.DELETE
+		  Case "POST"
+		    Return HTTP.RequestMethod.POST
+		  Case "PUT"
+		    Return HTTP.RequestMethod.PUT
+		  Case "TRACE"
+		    Return HTTP.RequestMethod.TRACE
+		  Case "OPTIONS"
+		    Return RequestMethod.OPTIONS
+		  Else
+		    Return HTTP.RequestMethod.InvalidMethod
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HTTPMethodName(Method As RequestMethod) As String
+		  Select Case Method
+		  Case RequestMethod.GET
+		    Return "GET"
+		  Case RequestMethod.HEAD
+		    Return "HEAD"
+		  Case RequestMethod.DELETE
+		    Return "DELETE"
+		  Case RequestMethod.POST
+		    Return "POST"
+		  Case RequestMethod.PUT
+		    Return "PUT"
+		  Case RequestMethod.TRACE
+		    Return "TRACE"
+		  Case RequestMethod.OPTIONS
+		    Return "OPTIONS"
+		  Else
+		    Return ""
+		    
+		  End Select
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function HTTPReplyString(Code As Integer) As String
 		  'Returns the properly formatted HTTP response line for a given HTTP status code.
 		  'e.g. HTTPResponse(404) = "HTTP/1.1 404 Not Found"
@@ -3108,6 +3155,7 @@ Protected Module HTTP
 		  PUT
 		  DELETE
 		  TRACE
+		  OPTIONS
 		InvalidMethod
 	#tag EndEnum
 

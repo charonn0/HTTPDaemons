@@ -35,6 +35,14 @@ Inherits TCPSocket
 		    doc.MessageBody = Data
 		  End If
 		  
+		  If clientrequest.Method = RequestMethod.OPTIONS Then
+		    doc = New HTTPResponse(200, "")
+		    doc.MessageBody = ""
+		    doc.Headers.SetHeader("Content-Length", "0")
+		    doc.Headers.SetHeader("Allow", "GET, HEAD, POST, TRACE, OPTIONS")
+		    doc.Headers.SetHeader("Accept-Ranges", "bytes")
+		  End If
+		  
 		  If Redirects.HasKey(clientrequest.Path) And doc = Nil Then
 		    doc = Redirects.Value(clientrequest.Path)
 		    doc.FromCache = True
