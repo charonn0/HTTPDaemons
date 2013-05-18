@@ -28,8 +28,10 @@ Inherits Pair
 		        Me.Expiry = HTTPDate(v)
 		      Case "Port"
 		        Me.Port = Val(v)
-		      Case "Secure", "httpOnly"
+		      Case "Secure"
 		        Me.Secure = True
+		      Case "httpOnly"
+		        Me.Secure = False
 		      Else
 		        ExtraParams.Value(k) = v
 		        
