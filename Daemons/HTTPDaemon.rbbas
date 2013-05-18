@@ -45,6 +45,8 @@ Inherits TCPSocket
 		    Select Case clientrequest.Method
 		    Case RequestMethod.TRACE
 		      doc = New HTTPResponse(200, "")
+		      doc.Headers.SetHeader("Content-Length", Str(Data.Size))
+		      doc.Headers.SetHeader("Content-Type", "message/http")
 		      doc.MessageBody = Data
 		    Case RequestMethod.OPTIONS
 		      doc = New HTTPResponse(200, "")
