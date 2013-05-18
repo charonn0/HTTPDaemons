@@ -2939,7 +2939,7 @@ Protected Module HTTP
 		  'This method is from here: https://github.com/bskrtich/RBHTTPServer
 		  // takes a Unix-encoded string and decodes it to the standard text encoding.
 		  
-		  // By Sascha RenÃ© Leib, published 11/08/2003 on the Athenaeum
+		  // By Sascha René Leib, published 11/08/2003 on the Athenaeum
 		  
 		  Dim r As String
 		  Dim c As Integer ' current char
@@ -2971,7 +2971,7 @@ Protected Module HTTP
 		  'This method is from here: https://github.com/bskrtich/RBHTTPServer
 		  // takes a locally encoded text string and converts it to a Unix-encoded string
 		  
-		  // By Sascha RenÃ© Leib, published 11/08/2003 on the Athenaeum
+		  // By Sascha René Leib, published 11/08/2003 on the Athenaeum
 		  
 		  Dim t As String ' encoded string
 		  Dim r As String
