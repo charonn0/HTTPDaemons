@@ -40,17 +40,8 @@ Inherits HTTPDaemon
 		      Me.Log("Found page", -2)
 		      doc = New HTTPResponse(item, ClientRequest.Path)
 		    End If
-		    
-		  Case RequestMethod.POST, RequestMethod.TRACE, RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.InvalidMethod
-		    
-		    doc = New HTTPResponse(405, ClientRequest.MethodName)
-		    
-		  Else
-		    doc = New HTTPResponse(400, ClientRequest.MethodName)
-		    
 		  End Select
-		  
-		  doc.Method = ClientRequest.Method
+		  If doc <> Nil Then doc.Method = ClientRequest.Method
 		  Return doc
 		  
 		End Function

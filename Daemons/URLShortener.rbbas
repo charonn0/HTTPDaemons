@@ -17,11 +17,6 @@ Inherits HTTPDaemon
 		  Case RequestMethod.POST
 		    Dim formdata As Dictionary = DecodeFormData(ClientRequest.MessageBody)
 		    doc = CreateShortURL(formdata.Value("ShortName"), formdata.Value("URL"))
-		    
-		  Else
-		    doc = New HTTPResponse(405, ClientRequest.MethodName)
-		    doc.Headers.SetHeader("Allow", "GET, POST")
-		    doc.MessageBody = ""
 		  End Select
 		  
 		  Return doc

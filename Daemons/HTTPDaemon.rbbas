@@ -30,19 +30,6 @@ Inherits TCPSocket
 		    End If
 		  End If
 		  
-		  If clientrequest.Method = RequestMethod.TRACE Then
-		    doc = New HTTPResponse(200, "")
-		    doc.MessageBody = Data
-		  End If
-		  
-		  If clientrequest.Method = RequestMethod.OPTIONS Then
-		    doc = New HTTPResponse(200, "")
-		    doc.MessageBody = ""
-		    doc.Headers.SetHeader("Content-Length", "0")
-		    doc.Headers.SetHeader("Allow", "GET, HEAD, POST, TRACE, OPTIONS")
-		    doc.Headers.SetHeader("Accept-Ranges", "bytes")
-		  End If
-		  
 		  If Redirects.HasKey(clientrequest.Path) And doc = Nil Then
 		    doc = Redirects.Value(clientrequest.Path)
 		    doc.FromCache = True
@@ -52,6 +39,24 @@ Inherits TCPSocket
 		  
 		  If doc = Nil Then
 		    doc = HandleRequest(clientrequest)
+		  End If
+		  
+		  If doc = Nil Then
+		    Select Case clientrequest.Method
+		    Case RequestMethod.TRACE
+		      doc = New HTTPResponse(200, "")
+		      doc.MessageBody = Data
+		    Case RequestMethod.OPTIONS
+		      doc = New HTTPResponse(200, "")
+		      doc.MessageBody = ""
+		      doc.Headers.SetHeader("Content-Length", "0")
+		      doc.Headers.SetHeader("Allow", "GET, HEAD, POST, TRACE, OPTIONS")
+		      doc.Headers.SetHeader("Accept-Ranges", "bytes")
+		    Case RequestMethod.GET, RequestMethod.HEAD
+		      doc = New HTTPResponse(404, clientrequest.Path)
+		    Else
+		      doc = New HTTPResponse(405, clientrequest.MethodName)
+		    End Select
 		  End If
 		  
 		  SendResponse(doc)
