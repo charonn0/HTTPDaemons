@@ -71,7 +71,7 @@ Protected Class HTTPRequest
 		  If Me.Arguments.Ubound > -1 Then
 		    args = "?" + Join(Me.Arguments, "&")
 		  End If
-		  Dim data As String = MethodName + " " + Path + args + " " + "HTTP/" + Format(ProtocolVersion, "#.0") + CRLF
+		  Dim data As String = MethodName + " " + URLEncode(Path) + URLEncode(args) + " " + "HTTP/" + Format(ProtocolVersion, "#.0") + CRLF
 		  If Headers.Count > 0 Then
 		    data = data + Headers.Source + CRLF
 		  End If
@@ -216,6 +216,11 @@ Protected Class HTTPRequest
 			InheritedFrom="Object"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="MessageBody"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
@@ -223,12 +228,6 @@ Protected Class HTTPRequest
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Path"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="PostContent"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
