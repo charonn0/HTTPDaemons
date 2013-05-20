@@ -52,6 +52,9 @@ Protected Class HTTPResponse
 		  Me.Path = Path
 		  Headers.AppendHeader("Location", RedirectURL)
 		  Me.Expires = New Date(1999, 12, 31, 23, 59, 59)
+		  Me.MessageBody = ErrorPage(302, RedirectURL)
+		  Me.SetHeader("Content-Type", MIMEstring("foo.html"))
+		  'Me.SetHeader("Content-Length", Str(Me.MessageBody.LenB))
 		End Sub
 	#tag EndMethod
 
@@ -165,6 +168,9 @@ Protected Class HTTPResponse
 		  page = ReplaceAll(page, "%HTTPERROR%", HTTPReplyString(ErrorNumber))
 		  
 		  Select Case ErrorNumber
+		  Case 301, 302
+		    page = ReplaceAll(page, "%DOCUMENT%", "The requested resource has moved. <a href=""" + param + """>Click here</a> if you are not automatically redirected.")
+		    
 		  Case 400
 		    page = ReplaceAll(page, "%DOCUMENT%", "The server  did not understand your request.")
 		    
@@ -204,11 +210,13 @@ Protected Class HTTPResponse
 		  
 		  page = ReplaceAll(page, "%SIGNATURE%", "<em>Powered By " + HTTPDaemon.DaemonVersion + "</em><br />")
 		  
-		  page = page + "<!--"
-		  Do
-		    page = page + " padding to make IE happy. "
-		  Loop Until page.LenB >= 512
-		  page = page + "-->"
+		  If page.LenB < 512 Then
+		    page = page + "<!--"
+		    Do
+		      page = page + " padding to make IE happy. "
+		    Loop Until page.LenB >= 512
+		    page = page + "-->"
+		  End If
 		  
 		  
 		  Return Page

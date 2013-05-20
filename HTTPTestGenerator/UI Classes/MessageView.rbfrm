@@ -42,7 +42,7 @@ Begin ContainerControl MessageView
       TabIndex        =   0
       TabPanelIndex   =   0
       Top             =   0
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   569
       Begin Label Label1

@@ -33,8 +33,8 @@ Inherits HTTPDaemon
 		      
 		    ElseIf ClientRequest.Path = "/" And Not item.Directory Then
 		      '302 redirect from "/" to "/" + item.name
-		      doc = New HTTPResponse(302, ClientRequest.Path)
-		      doc.Headers.SetHeader("Location", "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name)
+		      Dim location As String = "http://" + Me.LocalAddress + ":" + Format(Me.Port, "######") + "/" + Item.Name
+		      doc = New HTTPResponse("/", Location)
 		    Else
 		      '200 OK
 		      Me.Log("Found page", -2)
