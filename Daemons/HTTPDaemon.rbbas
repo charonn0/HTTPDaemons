@@ -131,18 +131,6 @@ Inherits TCPSocket
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		 Shared Function DecodeFormData(PostData As String) As Dictionary
-		  Dim items() As String = Split(PostData, "&")
-		  Dim form As New Dictionary
-		  For i As Integer = 0 To UBound(items)
-		    form.Value(URLDecode(NthField(items(i), "=", 1))) = URLDecode(NthField(items(i), "=", 2))
-		  Next
-		  
-		  Return form
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h1
 		Protected Shared Function IsCached(ClientRequest As HTTPRequest) As Boolean
 		  If PageCache.HasKey(ClientRequest.Path) And UseCache Then

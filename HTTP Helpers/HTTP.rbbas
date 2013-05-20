@@ -13,6 +13,28 @@ Protected Module HTTP
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function DecodeFormData(PostData As String) As Dictionary
+		  Dim items() As String = Split(PostData, "&")
+		  Dim form As New Dictionary
+		  For i As Integer = 0 To UBound(items)
+		    form.Value(URLDecode(NthField(items(i), "=", 1))) = URLDecode(NthField(items(i), "=", 2))
+		  Next
+		  
+		  Return form
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function EncodeFormData(PostData As Dictionary) As String
+		  Dim data() As String
+		  For Each key As String in PostData.Keys
+		    data.Append(URLEncode(Key) + "=" + URLEncode(PostData.Value(key)))
+		  Next
+		  Return Join(data, "&")
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function FormatBytes(bytes As UInt64, precision As Integer = 2) As String
 		  'Converts raw byte counts into SI formatted strings. 1KB = 1024 bytes.
 		  'Optionally pass an integer representing the number of decimal places to return. The default is two decimal places. You may specify

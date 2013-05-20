@@ -33,6 +33,7 @@ Picture=cookie_icon;HTTPTestGenerator/Icons/cookie_icon.png;&h366AC7FF;&h7071EFF
 Picture=cookie_icon_grey;HTTPTestGenerator/Icons/cookie_icon_grey.png;&h45937FFF;&h7071EFFF;false;0;&h0
 Class=URI;HTTPTestGenerator/UI Classes/URI.rbbas;&h3EE7AFFF;&h1E13FFF;false
 Window=HeaderViewer;HTTPTestGenerator/Windows/HeaderViewer.rbfrm;&h7E278FFF;&h11B79FFF;false
+Window=FormGenerator;HTTPTestGenerator/Windows/FormGenerator.rbfrm;&h19EBD7FF;&h11B79FFF;false
 DefaultWindow=Window1
 MajorVersion=1
 MinorVersion=0

@@ -592,7 +592,7 @@ Begin Window Generator
          Visible         =   True
          Width           =   350
       End
-      Begin Listbox Headers
+      Begin Listbox RequestHeaders
          AutoDeactivate  =   True
          AutoHideScrollbars=   True
          Bold            =   ""
@@ -826,7 +826,7 @@ Begin Window Generator
          Index           =   -2147483648
          InitialParent   =   "GroupBox1"
          Italic          =   ""
-         Left            =   322
+         Left            =   454
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
@@ -840,7 +840,7 @@ Begin Window Generator
          TextFont        =   "System"
          TextSize        =   0
          TextUnit        =   0
-         Top             =   161
+         Top             =   162
          Underline       =   ""
          Value           =   True
          Visible         =   True
@@ -943,7 +943,7 @@ Begin Window Generator
          Index           =   -2147483648
          InitialParent   =   "GroupBox1"
          Italic          =   ""
-         Left            =   92
+         Left            =   224
          LimitText       =   0
          LockBottom      =   ""
          LockedInPosition=   False
@@ -968,26 +968,26 @@ Begin Window Generator
          Visible         =   True
          Width           =   218
       End
-      Begin CheckBox gziprequest
+      Begin PushButton PushButton3
          AutoDeactivate  =   True
          Bold            =   ""
-         Caption         =   "Request GZip"
-         DataField       =   ""
-         DataSource      =   ""
+         ButtonStyle     =   0
+         Cancel          =   ""
+         Caption         =   "HTTP Form"
+         Default         =   ""
          Enabled         =   True
-         Height          =   20
+         Height          =   22
          HelpTag         =   ""
          Index           =   -2147483648
          InitialParent   =   "GroupBox1"
          Italic          =   ""
-         Left            =   454
+         Left            =   99
          LockBottom      =   ""
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   ""
          LockTop         =   True
          Scope           =   0
-         State           =   0
          TabIndex        =   12
          TabPanelIndex   =   0
          TabStop         =   True
@@ -996,9 +996,8 @@ Begin Window Generator
          TextUnit        =   0
          Top             =   161
          Underline       =   ""
-         Value           =   False
          Visible         =   True
-         Width           =   126
+         Width           =   97
       End
    End
    Begin Timer DataReceivedTimer
@@ -1013,7 +1012,7 @@ Begin Window Generator
       Top             =   597
       Width           =   32
    End
-   Begin Listbox Headers1
+   Begin Listbox ResponseHeaders
       AutoDeactivate  =   True
       AutoHideScrollbars=   True
       Bold            =   ""
@@ -1094,6 +1093,38 @@ Begin Window Generator
       Visible         =   True
       Width           =   126
    End
+   Begin CheckBox gziprequest
+      AutoDeactivate  =   True
+      Bold            =   ""
+      Caption         =   "Request GZip"
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   ""
+      Left            =   480
+      LockBottom      =   ""
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   ""
+      LockTop         =   True
+      Scope           =   0
+      State           =   0
+      TabIndex        =   9
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0
+      TextUnit        =   0
+      Top             =   -53
+      Underline       =   ""
+      Value           =   False
+      Visible         =   True
+      Width           =   126
+   End
 End
 #tag EndWindow
 
@@ -1109,8 +1140,8 @@ End
 		  Me.Request.ProtocolVersion = CDbl(NthField(ProtocolVer.Text, "/", 2))
 		  Me.Request.Arguments = TheURL.Arguments
 		  Dim heads As New InternetHeaders
-		  For i As Integer = 0 To Headers.LastIndex
-		    heads.AppendHeader(Headers.Cell(i, 0), Headers.Cell(i, 1))
+		  For i As Integer = 0 To RequestHeaders.LastIndex
+		    heads.AppendHeader(RequestHeaders.Cell(i, 0), RequestHeaders.Cell(i, 1))
 		  Next
 		  Me.Request.Headers = New HTTPHeaders(heads.Source)
 		  
@@ -1164,14 +1195,14 @@ End
 		    CodeName.TextColor = &cFF000000
 		    
 		  End Select
-		  Headers1.DeleteAllRows
+		  ResponseHeaders.DeleteAllRows
 		  CodeName.Text = Response.StatusMessage
 		  For i As Integer = 0 To Response.Headers.Count - 1
 		    Dim n, v As String
 		    n = Response.Headers.Name(i)
 		    v = Response.Headers.Value(n)
 		    
-		    Headers1.AddRow(n, v)
+		    ResponseHeaders.AddRow(n, v)
 		  Next
 		  CookiesButton.Visible = UBound(Response.Headers.Cookies) > -1
 		  CookiesButton.Invalidate(True)
@@ -1290,7 +1321,7 @@ End
 		    IPAddress1.Text = "Bad domain"
 		    IPAddress1.TextColor = &cFF000000
 		    IPAddress.TextColor = &cFF000000
-		    Headers1.DeleteAllRows
+		    ResponseHeaders.DeleteAllRows
 		    MessageView1.Message.Text = ""
 		    MessageView1.PagePanel1.Value = 3
 		    Code.Text = ""
@@ -1304,7 +1335,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events Headers
+#tag Events RequestHeaders
 	#tag Event
 		Function CellClick(row as Integer, column as Integer, x as Integer, y as Integer) As Boolean
 		  #pragma Unused x
@@ -1316,17 +1347,17 @@ End
 #tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  Headers.AddRow("New-Header-Name", "New-Header-Value", "")
-		  Headers.CellType(Headers.LastIndex, 0) = Listbox.TypeEditable
-		  Headers.EditCell(Headers.LastIndex, 0)
+		  RequestHeaders.AddRow("New-Header-Name", "New-Header-Value", "")
+		  RequestHeaders.CellType(RequestHeaders.LastIndex, 0) = Listbox.TypeEditable
+		  RequestHeaders.EditCell(RequestHeaders.LastIndex, 0)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events PushButton2
 	#tag Event
 		Sub Action()
-		  If Headers.ListIndex > -1 Then
-		    Headers.RemoveRow(Headers.ListIndex)
+		  If RequestHeaders.ListIndex > -1 Then
+		    RequestHeaders.RemoveRow(RequestHeaders.ListIndex)
 		  End If
 		End Sub
 	#tag EndEvent
@@ -1365,25 +1396,43 @@ End
 		Sub Action()
 		  Dim c As HTTPCookie
 		  Dim editindex As Integer = -1
-		  If Headers.Cell(Headers.ListIndex, 0) = "Cookie" Then
-		    c = New HTTPCookie(NthField(Headers.Cell(Headers.ListIndex, 1), ":", 1), NthField(Headers.Cell(Headers.ListIndex, 1), ":", 2))
-		    editindex = Headers.ListIndex
+		  If RequestHeaders.Cell(RequestHeaders.ListIndex, 0) = "Cookie" Then
+		    c = New HTTPCookie(NthField(RequestHeaders.Cell(RequestHeaders.ListIndex, 1), ":", 1), NthField(RequestHeaders.Cell(RequestHeaders.ListIndex, 1), ":", 2))
+		    editindex = RequestHeaders.ListIndex
 		  End If
 		  c = CookieEdit.GetCookie(c)
 		  If c <> Nil Then
 		    If editindex > -1 Then
-		      Headers.Cell(editindex, 1) = c.Name + "=" + c.Value
+		      RequestHeaders.Cell(editindex, 1) = c.Name + "=" + c.Value
 		    Else
-		      Headers.AddRow("Cookie", c.Name + "=" + c.Value, "HTTP Cookie")
+		      RequestHeaders.AddRow("Cookie", c.Name + "=" + c.Value, "HTTP Cookie")
 		    End If
 		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events gziprequest
+#tag Events PushButton3
 	#tag Event
-		Sub Open()
-		  Me.Enabled = GZIPAvailable
+		Sub Action()
+		  Dim formgen As New FormGenerator
+		  Dim data As Dictionary = formgen.SetFormData(DecodeFormData(MessageBody.Text))
+		  If Data <> Nil Then
+		    MessageBody.Text = EncodeFormData(data)
+		    
+		    For i As Integer = RequestHeaders.ListCount - 1 DownTo 0
+		      If RequestHeaders.Cell(i, 0) = "Content-Type" Then
+		        RequestHeaders.RemoveRow(i)
+		      End If
+		    Next
+		    For i As Integer = RequestHeaders.ListCount - 1 DownTo 0
+		      If RequestHeaders.Cell(i, 0) = "Content-Length" Then
+		        RequestHeaders.RemoveRow(i)
+		      End If
+		    Next
+		    
+		    RequestHeaders.AddRow("Content-Type", "application/x-www-form-urlencoded")
+		    RequestHeaders.AddRow("Content-Length", Str(LenB(MessageBody.Text)))
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -1391,6 +1440,13 @@ End
 	#tag Event
 		Sub Action()
 		  Update(Output)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events gziprequest
+	#tag Event
+		Sub Open()
+		  Me.Enabled = GZIPAvailable
 		End Sub
 	#tag EndEvent
 #tag EndEvents
