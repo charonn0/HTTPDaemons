@@ -1,19 +1,31 @@
 #tag Class
 Protected Class MultipartForm
 	#tag Method, Flags = &h0
-		Sub AddFile(File As FolderItem)
-		  Files.Append(File)
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub AddFormElement(ElementName As String, ElementValue As String)
-		  FormElements.Value(ElementName) = ElementValue
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		 Shared Function FromData(Data As String) As MultipartForm
+		 Shared Function FromData(Data As String, Boundary As String) As MultipartForm
+		  Dim form As New MultipartForm
+		  Dim elements() As String = Split(Data, Boundary + CRLF)
+		  form.Boundary = Boundary
+		  
+		  For i As Integer = 1 To UBound(elements)
+		    Dim line As String = NthField(elements(i), CRLF, 1)
+		    Dim name As String = NthField(line, ";", 2)
+		    name = NthField(name, "=", 2)
+		    name = ReplaceAll(name, """", "")
+		    If CountFields(line, ";") < 3 Then 'form data
+		      form.FormElements.Value(name) = NthField(elements(i), CRLF + CRLF, 2)
+		    Else 'file
+		      Dim filename As String = NthField(line, ";", 3)
+		      filename = NthField(filename, "=", 2)
+		      filename = ReplaceAll(filename, """", "")
+		      Dim tmp As FolderItem = SpecialFolder.Temporary.Child(filename)
+		      Dim bs As BinaryStream = BinaryStream.Create(tmp, True)
+		      bs.Write(NthField(elements(i), CRLF + CRLF, 2))
+		      bs.Close
+		      form.FormElements.Value(filename) = tmp
+		    End If
+		  Next
+		  
+		  Return form
 		  
 		End Function
 	#tag EndMethod
@@ -22,18 +34,21 @@ Protected Class MultipartForm
 		Function ToString() As String
 		  Dim data As String
 		  For Each key As String In FormElements.Keys
-		    data = data + Me.Boundary + CRLF
-		    data = data + "Content-Disposition: form-data; name=""" + key + """" + CRLF + CRLF
-		    data = data + FormElements.Value(key) + CRLF
+		    If VarType(FormElements.Value(Key)) = Variant.TypeString Then
+		      data = data + Me.Boundary + CRLF
+		      data = data + "Content-Disposition: form-data; name=""" + key + """" + CRLF + CRLF
+		      data = data + FormElements.Value(key) + CRLF
+		    ElseIf FormElements.Value(Key) IsA FolderItem Then
+		      Dim file As FolderItem = FormElements.Value(key)
+		      data = data + Me.Boundary + CRLF
+		      data = data + "Content-Disposition: form-data; name=""file""; filename=""" + File.Name + """" + CRLF
+		      data = data + "Content-Type: " + MIMEstring(File.Name) + CRLF + CRLF
+		      Dim bs As BinaryStream = BinaryStream.Open(File)
+		      data = data + bs.Read(bs.Length) + CRLF
+		      bs.Close
+		    End If
 		  Next
 		  
-		  For i As Integer = 0 To UBound(Me.Files)
-		    data = data + Me.Boundary + CRLF
-		    data = data + "Content-Disposition: form-data; name=""file" + Str(i) + """; filename=""" + Me.Files(i).Name + """" + CRLF
-		    data = data + "Content-Type: " + MIMEstring(Me.Files(i).Name) + CRLF + CRLF
-		    Dim bs As BinaryStream = BinaryStream.Open(Me.Files(i))
-		    data = data + bs.Read(bs.Length) + CRLF
-		  Next
 		  data = data + Me.Boundary + "--" + CRLF
 		  
 		  Return data
@@ -45,11 +60,7 @@ Protected Class MultipartForm
 		Boundary As String = "--bOrEdOmSoFtBoUnDaRy"
 	#tag EndProperty
 
-	#tag Property, Flags = &h1
-		Protected Files() As FolderItem
-	#tag EndProperty
-
-	#tag ComputedProperty, Flags = &h1
+	#tag ComputedProperty, Flags = &h0
 		#tag Getter
 			Get
 			  If mFormElements = Nil Then mFormElements = New Dictionary
@@ -61,7 +72,7 @@ Protected Class MultipartForm
 			  mFormElements = value
 			End Set
 		#tag EndSetter
-		Protected FormElements As Dictionary
+		FormElements As Dictionary
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
