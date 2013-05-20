@@ -6,10 +6,15 @@ Inherits HTTPDaemon
 		  Dim doc As HTTPResponse
 		  
 		  Select Case ClientRequest.Method
-		  Case RequestMethod.GET
+		  Case RequestMethod.GET, RequestMethod.HEAD
 		    If ClientRequest.Path = "/Create" Then
 		      doc = New HTTPResponse(200, ClientRequest.Path)
 		      doc.MessageBody = ReplaceAll(NEWURLPAGE, "%SIGNATURE%", "<em>Powered By " + HTTPDaemon.DaemonVersion + "</em><br />")
+		      doc.SetHeader("Content-Length", Str(doc.MessageBody.LenB))
+		      doc.SetHeader("Content-Type", MIMEstring("foo.html"))
+		      If ClientRequest.Method = RequestMethod.HEAD Then
+		        doc.MessageBody = ""
+		      End If
 		    Else
 		      doc = ClickShortURL(ClientRequest.Path)
 		    End If
