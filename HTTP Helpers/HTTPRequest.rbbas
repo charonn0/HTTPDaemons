@@ -16,9 +16,10 @@ Protected Class HTTPRequest
 		  End If
 		  
 		  data = Replace(data, line + CRLF, "")
-		  Me.MessageBody = NthField(data, CRLF + CRLF, 2)
-		  data = Replace(data, Me.MessageBody, "")
-		  Me.Headers = New HTTPHeaders(data)
+		  Dim h As String = NthField(data, CRLF + CRLF, 1)
+		  Me.Headers = New HTTPHeaders(h)
+		  Me.MessageBody = Replace(data, h, "")
+		  
 		  Me.Method = HTTP.HTTPMethod(NthField(line, " ", 1).Trim)
 		  If Me.Method = RequestMethod.InvalidMethod Then mTrueMethodName = NthField(line, " ", 1).Trim
 		  
