@@ -8,6 +8,7 @@ Folder=Daemons;Daemons;&h5F68A7FF;&h0;false
 Class=HTTPFileServer;Daemons/HTTPFileServer.rbbas;&h6AA717FF;&h5F68A7FF;false
 Class=HTTPDaemon;Daemons/HTTPDaemon.rbbas;&h1B4C27FF;&h5F68A7FF;false
 Folder=HTTP Helpers;HTTP Helpers;&h72732FFF;&h0;false
+Class=MultipartForm;HTTP Helpers/MultipartForm.rbbas;&h23581FFF;&h72732FFF;false
 Class=HTTPRequest;HTTP Helpers/HTTPRequest.rbbas;&h429A9FFF;&h72732FFF;false
 Class=HTTPCookie;HTTP Helpers/HTTPCookie.rbbas;&h6B617FF;&h72732FFF;false
 Class=HTTPHeaders;HTTP Helpers/HTTPHeaders.rbbas;&h60315FFF;&h72732FFF;false
