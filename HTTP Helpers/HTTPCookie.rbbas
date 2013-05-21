@@ -82,6 +82,8 @@ Inherits Pair
 		  If CompareTo.Path <> Me.Path Then Return False
 		  If CompareTo.Port <> Me.Port Then Return False
 		  If CompareTo.Secure <> Me.Secure Then Return False
+		  
+		  Return True
 		End Function
 	#tag EndMethod
 
