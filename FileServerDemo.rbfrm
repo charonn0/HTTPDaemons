@@ -242,7 +242,6 @@ Begin Window FileServerDemo
       AuthenticationRealm=   "Restricted Area"
       AuthenticationRequired=   False
       DirectoryBrowsing=   True
-      Enabled         =   True
       Height          =   32
       Index           =   -2147483648
       KeepListening   =   False
@@ -250,11 +249,8 @@ Begin Window FileServerDemo
       LockedInPosition=   False
       Port            =   0
       Scope           =   0
-      TabIndex        =   6
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   12
-      Visible         =   True
       Width           =   32
    End
    Begin ComboBox LogLevel
@@ -335,9 +331,7 @@ Begin Window FileServerDemo
       LockTop         =   True
       Maximum         =   100
       Scope           =   0
-      TabIndex        =   9
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   203
       Value           =   0
       Visible         =   True
@@ -625,6 +619,8 @@ End
 		  'Sock.Authenticate = CheckBox2.Value
 		  Dim redirect As New HTTPResponse("/bs", "http://www.boredomsoft.org")
 		  Sock.AddRedirect(redirect)
+		  Dim f As FolderItem = GetOpenFolderItem("")
+		  Sock.AddRedirect(New RBScriptDocument("/test", f))
 		  Sock.Listen
 		  ShowURL("http://" + Sock.NetworkInterface.IPAddress + ":" + Str(Sock.Port) + "/")
 		End Sub
