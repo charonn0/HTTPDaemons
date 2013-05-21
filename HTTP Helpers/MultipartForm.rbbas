@@ -18,10 +18,14 @@ Protected Class MultipartForm
 		      filename = NthField(filename, "=", 2)
 		      filename = ReplaceAll(filename, """", "")
 		      Dim tmp As FolderItem = SpecialFolder.Temporary.Child(filename)
-		      Dim bs As BinaryStream = BinaryStream.Create(tmp, True)
-		      bs.Write(NthField(elements(i), CRLF + CRLF, 2))
-		      bs.Close
-		      form.FormElements.Value(filename) = tmp
+		      Try
+		        Dim bs As BinaryStream = BinaryStream.Create(tmp, True)
+		        bs.Write(NthField(elements(i), CRLF + CRLF, 2))
+		        bs.Close
+		        form.FormElements.Value(filename) = tmp
+		      Catch Err As IOException
+		        Continue For i
+		      End Try
 		    End If
 		  Next
 		  

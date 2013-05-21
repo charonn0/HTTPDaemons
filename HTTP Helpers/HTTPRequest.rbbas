@@ -19,6 +19,13 @@ Protected Class HTTPRequest
 		  Dim h As String = NthField(data, CRLF + CRLF, 1)
 		  Me.Headers = New HTTPHeaders(h)
 		  Me.MessageBody = Replace(data, h, "")
+		  If Me.Headers.HasHeader("Content-Type") Then
+		    Dim type As String = Me.Headers.GetHeader("Content-Type")
+		    If InStr(type, "multipart/form-data") > 0 Then
+		      Dim boundary As String = NthField(type, "boundary=", 2).Trim
+		      Me.MultiPart = MultipartForm.FromData(Me.MessageBody, boundary)
+		    End If
+		  End If
 		  
 		  Me.Method = HTTP.HTTPMethod(NthField(line, " ", 1).Trim)
 		  If Me.Method = RequestMethod.InvalidMethod Then mTrueMethodName = NthField(line, " ", 1).Trim
@@ -73,6 +80,11 @@ Protected Class HTTPRequest
 		    args = "?" + Join(Me.Arguments, "&")
 		  End If
 		  Dim data As String = MethodName + " " + URLEncode(Path) + URLEncode(args) + " " + "HTTP/" + Format(ProtocolVersion, "#.0") + CRLF
+		  If Me.MultiPart <> Nil Then
+		    Me.Headers.SetHeader("Content-Type", "multipart/form-data; boundary=" + Me.MultiPart.Boundary)
+		    Me.MessageBody = Me.MultiPart.ToString
+		    Me.Headers.SetHeader("Content-Length", Str(Me.MessageBody.LenB))
+		  End If
 		  If Headers.Count > 0 Then
 		    data = data + Headers.Source + CRLF
 		  End If
@@ -166,6 +178,10 @@ Protected Class HTTPRequest
 
 	#tag Property, Flags = &h21
 		Private mTrueMethodName As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		MultiPart As MultipartForm
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
