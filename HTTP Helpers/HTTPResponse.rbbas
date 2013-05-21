@@ -283,6 +283,8 @@ Protected Class HTTPResponse
 	#tag Method, Flags = &h0
 		Function ToString() As String
 		  Dim data As String = Me.MessageBody
+		  
+		  
 		  If TamperMessageBody(data) Then
 		    Me.MessageBody = data
 		  End If
