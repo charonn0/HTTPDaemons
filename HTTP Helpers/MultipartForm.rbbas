@@ -7,6 +7,7 @@ Protected Class MultipartForm
 		  form.Boundary = Boundary
 		  
 		  For i As Integer = 1 To UBound(elements)
+		    elements(i) = Replace(elements(i), Boundary + "--", "")
 		    Dim line As String = NthField(elements(i), CRLF, 1)
 		    Dim name As String = NthField(line, ";", 2)
 		    name = NthField(name, "=", 2)
@@ -88,6 +89,7 @@ Protected Class MultipartForm
 		#tag ViewProperty
 			Name="Boundary"
 			Group="Behavior"
+			InitialValue="--bOrEdOmSoFtBoUnDaRy"
 			Type="String"
 			EditorType="MultiLineEditor"
 		#tag EndViewProperty
