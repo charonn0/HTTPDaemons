@@ -27,26 +27,8 @@ Inherits HTTPResponse
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function GetHeader(Index As Integer) As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
 		Private Function GetHeader(Name As String) As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function GetHeaderName(Index As Integer) As String
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Function HeaderCount() As Integer
-		  
+		  Return Me.Headers.Value(Name)
 		End Function
 	#tag EndMethod
 
