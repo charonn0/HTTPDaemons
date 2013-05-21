@@ -77,6 +77,15 @@ Inherits Pair
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function OriginCompare(CompareTo As HTTPCookie) As Boolean
+		  If CompareTo.Domain <> Me.Domain Then Return False
+		  If CompareTo.Path <> Me.Path Then Return False
+		  If CompareTo.Port <> Me.Port Then Return False
+		  If CompareTo.Secure <> Me.Secure Then Return False
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function ToString() As String
 		  Dim data As String = Me.Name + "=" + Me.Value
 		  
