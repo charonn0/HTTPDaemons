@@ -619,8 +619,8 @@ End
 		  'Sock.Authenticate = CheckBox2.Value
 		  Dim redirect As New HTTPResponse("/bs", "http://www.boredomsoft.org")
 		  Sock.AddRedirect(redirect)
-		  Dim f As FolderItem = GetOpenFolderItem("")
-		  Sock.AddRedirect(New RBScriptDocument("/test", f))
+		  'Dim f As FolderItem = GetOpenFolderItem("")
+		  'Sock.AddRedirect(New RBScriptDocument("/test", f))
 		  Sock.Listen
 		  ShowURL("http://" + Sock.NetworkInterface.IPAddress + ":" + Str(Sock.Port) + "/")
 		End Sub
